@@ -15,25 +15,35 @@ struct TemperatureSensorListView: View {
     let sensorManager: BluetoothTemperatureSensorManager
     
     var body: some View {
-            Group {
+        Group {
+            ScrollView(.vertical) {
                 if sensorManager.sensorArray.isEmpty {
                     Text("No temperature sensors discovered")
                 } else {
-                    List(sensorManager.sensorArray) {sensor in
-                        TemperatureSensorCardView(sensor: sensor)
-                            .listRowSeparator(.hidden)
+                    VStack {
+                        ForEach(sensorManager.sensorArray) {sensor in
+                            TemperatureSensorCardView(sensor: sensor)
+                                .padding(.horizontal)
+                        }
                     }
-                    .listStyle(.plain)
                 }
             }
-            .task {
+            .refreshable {
                 do {
                     try await sensorManager.scannForSensors()
                 } catch {
                     
                 }
             }
-            .navigationTitle("Discovered devices")
+        }
+        .task {
+            do {
+                try await sensorManager.scannForSensors()
+            } catch {
+                
+            }
+        }
+        .navigationTitle("Discovered devices")
     }
 }
 

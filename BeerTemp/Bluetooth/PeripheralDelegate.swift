@@ -6,6 +6,7 @@ class PeripheralDelegate: NSObject {
         case didDiscoverServices(error: Error?)
         case didDiscoverCharacteristicsFor(service: CBService, error: Error?)
         case didUpdateValueFor(characteristic: CBCharacteristic, error: Error?)
+        case didWriteValueFor(characteristic: CBCharacteristic, error: Error?)
     }
     
     let delegateEventStream: AsyncStream<DelegateEvents>
@@ -36,5 +37,9 @@ extension PeripheralDelegate: CBPeripheralDelegate {
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         delegateEventStreamContinuation.yield(.didUpdateValueFor(characteristic: characteristic, error: error))
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        delegateEventStreamContinuation.yield(.didWriteValueFor(characteristic: characteristic, error: error))
     }
 }

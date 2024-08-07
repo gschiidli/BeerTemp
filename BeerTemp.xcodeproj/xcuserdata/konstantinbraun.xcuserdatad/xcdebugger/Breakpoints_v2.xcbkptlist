@@ -3,4 +3,198 @@
    uuid = "C08AAD36-4D11-4EAA-A0DC-4D7BB73CDD74"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "71AEA1BE-2A57-4738-B113-1A88C292700E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "157"
+            endingLineNumber = "157"
+            landmarkName = "refreshTargetValueProgressSubscription()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "71AEA1BE-2A57-4738-B113-1A88C292700E - 95c02eeac85a87b9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async throws -&gt; () in BeerTemp.BluetoothTemperatureSensor.refreshTargetValueProgressSubscription() -&gt; ()"
+                  moduleName = "BeerTemp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/konstantinbraun/Developer/BeerTemp/BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "157"
+                  endingLineNumber = "157"
+                  offsetFromSymbolStart = "732">
+               </Location>
+               <Location
+                  uuid = "71AEA1BE-2A57-4738-B113-1A88C292700E - 38e6aa23d72451fb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async throws -&gt; () in BeerTemp.BluetoothTemperatureSensor.refreshTargetValueProgressSubscription(for: Swift.Optional&lt;Swift.Double&gt;) -&gt; ()"
+                  moduleName = "BeerTemp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/konstantinbraun/Developer/BeerTemp/BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "157"
+                  endingLineNumber = "157"
+                  offsetFromSymbolStart = "732">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4E05A775-691E-4D2D-AD0E-1B5221411190"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "159"
+            endingLineNumber = "159"
+            landmarkName = "refreshTargetValueProgressSubscription()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "4E05A775-691E-4D2D-AD0E-1B5221411190 - 95c02eeac85a87fb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async throws -&gt; () in BeerTemp.BluetoothTemperatureSensor.refreshTargetValueProgressSubscription() -&gt; ()"
+                  moduleName = "BeerTemp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/konstantinbraun/Developer/BeerTemp/BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "812">
+               </Location>
+               <Location
+                  uuid = "4E05A775-691E-4D2D-AD0E-1B5221411190 - 38e6aa23d72451b9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async throws -&gt; () in BeerTemp.BluetoothTemperatureSensor.refreshTargetValueProgressSubscription(for: Swift.Optional&lt;Swift.Double&gt;) -&gt; ()"
+                  moduleName = "BeerTemp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/konstantinbraun/Developer/BeerTemp/BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "812">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2A0F58DD-F280-4002-B565-318BB05E7E09"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "145"
+            endingLineNumber = "145"
+            landmarkName = "refreshTargetValueProgressSubscription()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "2A0F58DD-F280-4002-B565-318BB05E7E09 - 3820074fee149f42"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BeerTemp.BluetoothTemperatureSensor.refreshTargetValueProgressSubscription() -&gt; ()"
+                  moduleName = "BeerTemp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/konstantinbraun/Developer/BeerTemp/BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "145"
+                  endingLineNumber = "145"
+                  offsetFromSymbolStart = "800">
+               </Location>
+               <Location
+                  uuid = "2A0F58DD-F280-4002-B565-318BB05E7E09 - cc25b5b5325735f5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BeerTemp.BluetoothTemperatureSensor.refreshTargetValueProgressSubscription(for: Swift.Optional&lt;Swift.Double&gt;) -&gt; ()"
+                  moduleName = "BeerTemp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/konstantinbraun/Developer/BeerTemp/BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "145"
+                  endingLineNumber = "145"
+                  offsetFromSymbolStart = "828">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FA9EA5C4-7D2A-481A-AD8C-10964EB89CEA"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
+            landmarkName = "refreshTargetValueProgressSubscription()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "FA9EA5C4-7D2A-481A-AD8C-10964EB89CEA - 3820074fee149ec6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BeerTemp.BluetoothTemperatureSensor.refreshTargetValueProgressSubscription() -&gt; ()"
+                  moduleName = "BeerTemp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/konstantinbraun/Developer/BeerTemp/BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "141"
+                  endingLineNumber = "141"
+                  offsetFromSymbolStart = "344">
+               </Location>
+               <Location
+                  uuid = "FA9EA5C4-7D2A-481A-AD8C-10964EB89CEA - cc25b5b532573471"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BeerTemp.BluetoothTemperatureSensor.refreshTargetValueProgressSubscription(for: Swift.Optional&lt;Swift.Double&gt;) -&gt; ()"
+                  moduleName = "BeerTemp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/konstantinbraun/Developer/BeerTemp/BeerTemp/Bluetooth/BluetoothTemperatureSensor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "141"
+                  endingLineNumber = "141"
+                  offsetFromSymbolStart = "372">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
