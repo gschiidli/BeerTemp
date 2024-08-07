@@ -2,6 +2,7 @@ import CoreBluetooth
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 class BluetoothTemperatureSensor {
     static let serviceUUID = CBUUID(string: "4fafc201-1fb5-459e-8fcc-c5c9c331914b")
@@ -19,6 +20,10 @@ class BluetoothTemperatureSensor {
     var state: ConnectionState = .disconnected
     var valueInCelcius: Double?
     
+    var name: String? {
+        peripheral.name
+    }
+    
     init(peripheral: CBPeripheral) {
         let peripheralDelegate = PeripheralDelegate()
         peripheral.delegate = peripheralDelegate
@@ -28,7 +33,7 @@ class BluetoothTemperatureSensor {
     }
     
     private func subscirbeToDelegateEvents(peripheralDelegate: PeripheralDelegate) {
-        Task { [weak self] in
+        Task { @MainActor [weak self] in
             for await event in peripheralDelegate.delegateEventStream {
                 guard let self else {
                     return

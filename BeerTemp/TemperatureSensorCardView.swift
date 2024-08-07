@@ -5,14 +5,15 @@ struct TemperatureSensorCardView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Sensor \(sensor.id)")
-                .font(.title)
+            Text("Sensor \(sensor.name ?? "Undefined")")
+            Text("ID: \(sensor.id)")
+                .font(.caption)
             Text("Connection state: \(connectionState)")
                 .font(.caption)
             HStack {
                 Spacer()
                 if let value = sensor.valueInCelcius {
-                    Text("Value: \(value)")
+                    Text("\(value.formatted(.number.precision(.fractionLength(3)))) °C")
                 } else {
                     Text("No value received yet")
                 }
@@ -23,6 +24,7 @@ struct TemperatureSensorCardView: View {
         .cornerRadius(3.0)
     }
     
+    @MainActor
     private var connectionState: String {
         switch sensor.state {
         case .disconnected:

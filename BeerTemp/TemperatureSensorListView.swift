@@ -19,15 +19,11 @@ struct TemperatureSensorListView: View {
                 if sensorManager.sensorArray.isEmpty {
                     Text("No temperature sensors discovered")
                 } else {
-                    ScrollView(.vertical) {
-                        VStack(spacing: 8) {
-                            ForEach(sensorManager.sensorArray) { sensor in
-                                TemperatureSensorCardView(sensor: sensor)
-                                    .padding(.horizontal)
-                            }
-                            Spacer()
-                        }
+                    List(sensorManager.sensorArray) {sensor in
+                        TemperatureSensorCardView(sensor: sensor)
+                            .listRowSeparator(.hidden)
                     }
+                    .listStyle(.plain)
                 }
             }
             .task {

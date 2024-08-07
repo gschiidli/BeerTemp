@@ -6,6 +6,7 @@ enum BluetoothTemperatureSensorManagerError: Error {
     case invalidState(state: CBManagerState)
 }
 
+@MainActor
 @Observable
 class BluetoothTemperatureSensorManager {
     var sensors: Set<BluetoothTemperatureSensor> = []
@@ -25,7 +26,7 @@ class BluetoothTemperatureSensorManager {
     }
     
     private func subscirbeToDelegateEvents(centralManager: CBCentralManager, centralManagerDelegate: CentralManagerDelegate) {
-        Task { [weak self] in
+        Task { @MainActor [weak self] in
             for await event in centralManagerDelegate.delegateEventStream {
                 guard let self else {
                     return
@@ -74,6 +75,10 @@ class BluetoothTemperatureSensorManager {
     }
     
     private func didDiscover(peripheral: CBPeripheral, on centralManager: CBCentralManager) {
+        guard sensors.contains(where: { $0.id == peripheral.identifier }) == false else {
+            return
+        }
+        
         let sensor = BluetoothTemperatureSensor(peripheral: peripheral)
         centralManager.connect(peripheral)
         sensors.insert(sensor)
