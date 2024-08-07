@@ -8,18 +8,31 @@
 
 /* Begin PBXBuildFile section */
 		527B71372C62A0A5003CC99D /* BeerTempApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B71362C62A0A5003CC99D /* BeerTempApp.swift */; };
-		527B71392C62A0A5003CC99D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B71382C62A0A5003CC99D /* ContentView.swift */; };
+		527B71392C62A0A5003CC99D /* TemperatureSensorListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B71382C62A0A5003CC99D /* TemperatureSensorListView.swift */; };
 		527B713B2C62A0A7003CC99D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 527B713A2C62A0A7003CC99D /* Assets.xcassets */; };
 		527B713F2C62A0A7003CC99D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 527B713E2C62A0A7003CC99D /* Preview Assets.xcassets */; };
+		527B71462C62A535003CC99D /* BluetoothTemperatureSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B71452C62A535003CC99D /* BluetoothTemperatureSensor.swift */; };
+		527B71492C63959E003CC99D /* BluetoothTemperatureSensorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B71482C63959E003CC99D /* BluetoothTemperatureSensorManager.swift */; };
+		527B714B2C639617003CC99D /* Data+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B714A2C639617003CC99D /* Data+Additions.swift */; };
+		527B714D2C6396CA003CC99D /* CentralManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B714C2C6396CA003CC99D /* CentralManagerDelegate.swift */; };
+		527B71502C63A0DE003CC99D /* PeripheralDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B714F2C63A0DE003CC99D /* PeripheralDelegate.swift */; };
+		527B71522C63A41F003CC99D /* TemperatureSensorCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B71512C63A41F003CC99D /* TemperatureSensorCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		527B71332C62A0A5003CC99D /* BeerTemp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeerTemp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		527B71362C62A0A5003CC99D /* BeerTempApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerTempApp.swift; sourceTree = "<group>"; };
-		527B71382C62A0A5003CC99D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		527B71382C62A0A5003CC99D /* TemperatureSensorListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureSensorListView.swift; sourceTree = "<group>"; };
 		527B713A2C62A0A7003CC99D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		527B713C2C62A0A7003CC99D /* BeerTemp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeerTemp.entitlements; sourceTree = "<group>"; };
 		527B713E2C62A0A7003CC99D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		527B71452C62A535003CC99D /* BluetoothTemperatureSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothTemperatureSensor.swift; sourceTree = "<group>"; };
+		527B71472C62B25B003CC99D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		527B71482C63959E003CC99D /* BluetoothTemperatureSensorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothTemperatureSensorManager.swift; sourceTree = "<group>"; };
+		527B714A2C639617003CC99D /* Data+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Additions.swift"; sourceTree = "<group>"; };
+		527B714C2C6396CA003CC99D /* CentralManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerDelegate.swift; sourceTree = "<group>"; };
+		527B714F2C63A0DE003CC99D /* PeripheralDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralDelegate.swift; sourceTree = "<group>"; };
+		527B71512C63A41F003CC99D /* TemperatureSensorCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureSensorCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,8 +65,12 @@
 		527B71352C62A0A5003CC99D /* BeerTemp */ = {
 			isa = PBXGroup;
 			children = (
+				527B71472C62B25B003CC99D /* Info.plist */,
 				527B71362C62A0A5003CC99D /* BeerTempApp.swift */,
-				527B71382C62A0A5003CC99D /* ContentView.swift */,
+				527B71382C62A0A5003CC99D /* TemperatureSensorListView.swift */,
+				527B71512C63A41F003CC99D /* TemperatureSensorCardView.swift */,
+				527B714E2C6396D1003CC99D /* Bluetooth */,
+				527B714A2C639617003CC99D /* Data+Additions.swift */,
 				527B713A2C62A0A7003CC99D /* Assets.xcassets */,
 				527B713C2C62A0A7003CC99D /* BeerTemp.entitlements */,
 				527B713D2C62A0A7003CC99D /* Preview Content */,
@@ -67,6 +84,17 @@
 				527B713E2C62A0A7003CC99D /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		527B714E2C6396D1003CC99D /* Bluetooth */ = {
+			isa = PBXGroup;
+			children = (
+				527B71482C63959E003CC99D /* BluetoothTemperatureSensorManager.swift */,
+				527B71452C62A535003CC99D /* BluetoothTemperatureSensor.swift */,
+				527B714C2C6396CA003CC99D /* CentralManagerDelegate.swift */,
+				527B714F2C63A0DE003CC99D /* PeripheralDelegate.swift */,
+			);
+			path = Bluetooth;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,8 +167,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				527B71392C62A0A5003CC99D /* ContentView.swift in Sources */,
+				527B714D2C6396CA003CC99D /* CentralManagerDelegate.swift in Sources */,
+				527B71522C63A41F003CC99D /* TemperatureSensorCardView.swift in Sources */,
+				527B71392C62A0A5003CC99D /* TemperatureSensorListView.swift in Sources */,
+				527B71502C63A0DE003CC99D /* PeripheralDelegate.swift in Sources */,
+				527B714B2C639617003CC99D /* Data+Additions.swift in Sources */,
 				527B71372C62A0A5003CC99D /* BeerTempApp.swift in Sources */,
+				527B71462C62A535003CC99D /* BluetoothTemperatureSensor.swift in Sources */,
+				527B71492C63959E003CC99D /* BluetoothTemperatureSensorManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,10 +304,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BeerTemp/Preview Content\"";
-				DEVELOPMENT_TEAM = GCE89EL8W5;
+				DEVELOPMENT_TEAM = 6VC52FR9XZ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BeerTemp/Info.plist;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = Test;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -289,7 +325,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = at.konstantin.BeerTemp;
+				PRODUCT_BUNDLE_IDENTIFIER = at.arkulpa.konstantin.BeerTemp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -308,10 +344,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"BeerTemp/Preview Content\"";
-				DEVELOPMENT_TEAM = GCE89EL8W5;
+				DEVELOPMENT_TEAM = 6VC52FR9XZ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BeerTemp/Info.plist;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = Test;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -327,7 +365,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = at.konstantin.BeerTemp;
+				PRODUCT_BUNDLE_IDENTIFIER = at.arkulpa.konstantin.BeerTemp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
