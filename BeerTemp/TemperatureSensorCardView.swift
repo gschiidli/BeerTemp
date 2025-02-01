@@ -1,4 +1,5 @@
 import SwiftUI
+import Charts
 
 struct TemperatureSensorCardView: View {
     @Bindable var sensor: BluetoothTemperatureSensor
@@ -50,6 +51,12 @@ struct TemperatureSensorCardView: View {
                         }
                     }
                 }
+            Chart(sensor.pastValues) {
+                LineMark(
+                    x: .value("Month", $0.date),
+                    y: .value("Temperature in °C", $0.value)
+                )
+            }
         }
         .onChange(of: scenePhase) { _, newValue in
             sensor.scenePhase = newValue
@@ -57,6 +64,18 @@ struct TemperatureSensorCardView: View {
         .padding()
         .background(backgroundColor)
         .cornerRadius(3.0)
+        .sheet(isPresented: $sensor.hasLogFileToExport) {
+            if let logFile = sensor.logFile {
+                ShareSheet(items: [logFile])
+            }
+        }
+        .swipeActions {
+            Button {
+                sensor.exportLogsTapped()
+            } label: {
+                Text("Export Logs")
+            }
+        }
     }
     
     @MainActor

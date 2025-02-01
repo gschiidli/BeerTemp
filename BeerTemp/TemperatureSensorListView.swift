@@ -15,9 +15,9 @@ struct TemperatureSensorListView: View {
     let sensorManager: BluetoothTemperatureSensorManager
 
     var body: some View {
-        ScrollView(.vertical) {
+        List {
             if sensorManager.sensorArray.isEmpty {
-                VStack {
+                VStack(alignment: .center) {
                     Image(systemName: "thermometer.medium.slash")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -30,15 +30,16 @@ struct TemperatureSensorListView: View {
                         .multilineTextAlignment(.center)
                         .font(.subheadline)
                 }
+                .frame(maxWidth: .infinity)
+                .listRowSeparator(.hidden)
             } else {
-                VStack {
-                    ForEach(sensorManager.sensorArray) { sensor in
-                        TemperatureSensorCardView(sensor: sensor)
-                            .padding(.horizontal)
-                    }
+                ForEach(sensorManager.sensorArray) { sensor in
+                    TemperatureSensorCardView(sensor: sensor)
+                        .listRowSeparator(.hidden)
                 }
             }
         }
+        .listStyle(.plain)
         .refreshable {
             do {
                 try await sensorManager.scannForSensors()

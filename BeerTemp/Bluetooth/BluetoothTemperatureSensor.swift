@@ -16,6 +16,15 @@ enum TargetValueProgress: UInt8 {
     case passedThePoint
 }
 
+struct LogValue: Identifiable {
+    let value: Double
+    let date: Date
+    
+    var id: Date {
+        date
+    }
+}
+
 @MainActor
 @Observable
 class BluetoothTemperatureSensor {
@@ -40,9 +49,29 @@ class BluetoothTemperatureSensor {
     private let peripheral: CBPeripheral
 
     var state: ConnectionState = .disconnected
-    var valueInCelcius: Double?
+    
+    var pastValues = [LogValue]() {
+        didSet {
+            let now = Date()
+            if let oldestValue = pastValues.first,
+               oldestValue.date.distance(to: now) > 30*60 {
+                pastValues = pastValues.filter {
+                    $0.date.distance(to: now) < 30*60
+                }
+            }
+        }
+    }
+    
+    var valueInCelcius: Double? {
+        didSet {
+            logger.log(valueInCelcius)
+        }
+    }
+    
     var autoUpdateInterval: UInt32?
+    
     private var setTargetDebounceTask: Task<Void, Error>?
+    
     var targetValue: Double? {
         didSet {
             guard targetValue != oldValue else {
@@ -56,6 +85,7 @@ class BluetoothTemperatureSensor {
         }
     }
     var targetValueProgress: TargetValueProgress = .notInProgress
+    
     var scenePhase: ScenePhase = .background
 
     var targetValueString: String {
@@ -74,10 +104,28 @@ class BluetoothTemperatureSensor {
     var name: String? {
         peripheral.name
     }
+    
+    let logger: CsvLogger
+    
+    var logFile: URL?
+    
+    var hasLogFileToExport: Bool {
+        get {
+            logFile != nil
+        }
+        set {
+            if newValue == false {
+                logFile = nil
+            }
+        }
+    }
 
     init(peripheral: CBPeripheral) {
         let peripheralDelegate = PeripheralDelegate()
         peripheral.delegate = peripheralDelegate
+        
+        logger = CsvLogger(fileName: "\(peripheral.name ?? "Unknown").csv")
+        
         self.peripheral = peripheral
 
         subscirbeToDelegateEvents(peripheralDelegate: peripheralDelegate)
@@ -197,7 +245,6 @@ class BluetoothTemperatureSensor {
         oldTargetValueProgress: TargetValueProgress,
         newTargetValueProgress: TargetValueProgress
     ) {
-        print(oldTargetValueProgress, newTargetValueProgress)
         switch (oldTargetValueProgress, newTargetValueProgress) {
         case (.onTheWay, .onPoint), (.onPoint, .passedThePoint), (.passedThePoint, .onPoint):
             break
@@ -248,7 +295,6 @@ class BluetoothTemperatureSensor {
 
         // add our notification request
         UNUserNotificationCenter.current().add(request)
-        print(request.content.title, request.content.subtitle)
     }
 
     func didConnect() {
@@ -301,6 +347,9 @@ class BluetoothTemperatureSensor {
                         let valueInCelcius = valueData?.floatValue.map(
                             Double.init)
                         self?.valueInCelcius = valueInCelcius
+                        if let valueInCelcius {
+                            self?.pastValues.append(LogValue(value: valueInCelcius, date: Date()))
+                        }
                     }
                 }
             }
@@ -446,6 +495,10 @@ class BluetoothTemperatureSensor {
                 peripheral.setNotifyValue(true, for: characteristic)
             }
         }
+    }
+    
+    func exportLogsTapped() {
+        logFile = logger.logFileURL
     }
 }
 

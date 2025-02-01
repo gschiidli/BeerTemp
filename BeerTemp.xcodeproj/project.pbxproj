@@ -17,6 +17,8 @@
 		527B714D2C6396CA003CC99D /* CentralManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B714C2C6396CA003CC99D /* CentralManagerDelegate.swift */; };
 		527B71502C63A0DE003CC99D /* PeripheralDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B714F2C63A0DE003CC99D /* PeripheralDelegate.swift */; };
 		527B71522C63A41F003CC99D /* TemperatureSensorCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B71512C63A41F003CC99D /* TemperatureSensorCardView.swift */; };
+		52C6CF352D4EA432004BDF11 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6CF342D4EA430004BDF11 /* Logger.swift */; };
+		52C6CF372D4EA64A004BDF11 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6CF362D4EA647004BDF11 /* ShareSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,8 @@
 		527B714C2C6396CA003CC99D /* CentralManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralManagerDelegate.swift; sourceTree = "<group>"; };
 		527B714F2C63A0DE003CC99D /* PeripheralDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralDelegate.swift; sourceTree = "<group>"; };
 		527B71512C63A41F003CC99D /* TemperatureSensorCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureSensorCardView.swift; sourceTree = "<group>"; };
+		52C6CF342D4EA430004BDF11 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		52C6CF362D4EA647004BDF11 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +73,7 @@
 				527B71362C62A0A5003CC99D /* BeerTempApp.swift */,
 				527B71382C62A0A5003CC99D /* TemperatureSensorListView.swift */,
 				527B71512C63A41F003CC99D /* TemperatureSensorCardView.swift */,
+				52C6CF362D4EA647004BDF11 /* ShareSheet.swift */,
 				527B714E2C6396D1003CC99D /* Bluetooth */,
 				527B714A2C639617003CC99D /* Data+Additions.swift */,
 				527B713A2C62A0A7003CC99D /* Assets.xcassets */,
@@ -91,6 +96,7 @@
 			children = (
 				527B71482C63959E003CC99D /* BluetoothTemperatureSensorManager.swift */,
 				527B71452C62A535003CC99D /* BluetoothTemperatureSensor.swift */,
+				52C6CF342D4EA430004BDF11 /* Logger.swift */,
 				527B714C2C6396CA003CC99D /* CentralManagerDelegate.swift */,
 				527B714F2C63A0DE003CC99D /* PeripheralDelegate.swift */,
 			);
@@ -168,9 +174,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				527B714D2C6396CA003CC99D /* CentralManagerDelegate.swift in Sources */,
+				52C6CF372D4EA64A004BDF11 /* ShareSheet.swift in Sources */,
 				527B71522C63A41F003CC99D /* TemperatureSensorCardView.swift in Sources */,
 				527B71392C62A0A5003CC99D /* TemperatureSensorListView.swift in Sources */,
 				527B71502C63A0DE003CC99D /* PeripheralDelegate.swift in Sources */,
+				52C6CF352D4EA432004BDF11 /* Logger.swift in Sources */,
 				527B714B2C639617003CC99D /* Data+Additions.swift in Sources */,
 				527B71372C62A0A5003CC99D /* BeerTempApp.swift in Sources */,
 				527B71462C62A535003CC99D /* BluetoothTemperatureSensor.swift in Sources */,
