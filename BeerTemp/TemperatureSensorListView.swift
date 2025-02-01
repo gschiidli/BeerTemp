@@ -13,34 +13,44 @@ struct DataUpdate {
 
 struct TemperatureSensorListView: View {
     let sensorManager: BluetoothTemperatureSensorManager
-    
+
     var body: some View {
-        Group {
-            ScrollView(.vertical) {
-                if sensorManager.sensorArray.isEmpty {
+        ScrollView(.vertical) {
+            if sensorManager.sensorArray.isEmpty {
+                VStack {
+                    Image(systemName: "thermometer.medium.slash")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 100, height: 100)
+                        .padding(.top, 100)
+                        .padding(.bottom, 16)
                     Text("No temperature sensors discovered")
-                } else {
-                    VStack {
-                        ForEach(sensorManager.sensorArray) {sensor in
-                            TemperatureSensorCardView(sensor: sensor)
-                                .padding(.horizontal)
-                        }
+                        .font(.headline)
+                    Text("Pull down to search.")
+                        .multilineTextAlignment(.center)
+                        .font(.subheadline)
+                }
+            } else {
+                VStack {
+                    ForEach(sensorManager.sensorArray) { sensor in
+                        TemperatureSensorCardView(sensor: sensor)
+                            .padding(.horizontal)
                     }
                 }
             }
-            .refreshable {
-                do {
-                    try await sensorManager.scannForSensors()
-                } catch {
-                    
-                }
+        }
+        .refreshable {
+            do {
+                try await sensorManager.scannForSensors()
+            } catch {
+
             }
         }
         .task {
             do {
                 try await sensorManager.scannForSensors()
             } catch {
-                
+
             }
         }
         .navigationTitle("Discovered devices")
@@ -48,5 +58,8 @@ struct TemperatureSensorListView: View {
 }
 
 #Preview {
-    TemperatureSensorListView(sensorManager: BluetoothTemperatureSensorManager())
+    NavigationView {
+        TemperatureSensorListView(
+            sensorManager: BluetoothTemperatureSensorManager())
+    }
 }

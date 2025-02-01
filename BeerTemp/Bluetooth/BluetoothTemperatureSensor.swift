@@ -19,21 +19,26 @@ enum TargetValueProgress: UInt8 {
 @MainActor
 @Observable
 class BluetoothTemperatureSensor {
-    static let serviceUUID = CBUUID(string: "4fafc201-1fb5-459e-8fcc-c5c9c331914b")
-    static let valueCharacteristicUUID = CBUUID(string: "beb5483e-36e1-4688-b7f5-ea07361b26a8")
-    static let autoUpdateCharacteristicUUID = CBUUID(string: "f751d216-4044-461f-a4e6-548314d60679")
-    static let targetValueCharacteristicUUID = CBUUID(string: "44e7fcba-4db0-4c41-b0a8-a34fc66afd74")
-    static let targetValueProgressCharacteristicUUID = CBUUID(string: "6d913149-d0fc-4d85-9dd5-615248f2bee0")
-    
+    static let serviceUUID = CBUUID(
+        string: "4fafc201-1fb5-459e-8fcc-c5c9c331914b")
+    static let valueCharacteristicUUID = CBUUID(
+        string: "beb5483e-36e1-4688-b7f5-ea07361b26a8")
+    static let autoUpdateCharacteristicUUID = CBUUID(
+        string: "f751d216-4044-461f-a4e6-548314d60679")
+    static let targetValueCharacteristicUUID = CBUUID(
+        string: "44e7fcba-4db0-4c41-b0a8-a34fc66afd74")
+    static let targetValueProgressCharacteristicUUID = CBUUID(
+        string: "6d913149-d0fc-4d85-9dd5-615248f2bee0")
+
     enum ConnectionState {
         case disconnected
         case connecting
         case connected
         case failedConnection(error: Error?)
     }
-    
+
     private let peripheral: CBPeripheral
-    
+
     var state: ConnectionState = .disconnected
     var valueInCelcius: Double?
     var autoUpdateInterval: UInt32?
@@ -52,7 +57,7 @@ class BluetoothTemperatureSensor {
     }
     var targetValueProgress: TargetValueProgress = .notInProgress
     var scenePhase: ScenePhase = .background
-    
+
     var targetValueString: String {
         get {
             targetValue?.formatted(.number.precision(.fractionLength(3))) ?? ""
@@ -65,19 +70,21 @@ class BluetoothTemperatureSensor {
             }
         }
     }
-    
+
     var name: String? {
         peripheral.name
     }
-    
+
     init(peripheral: CBPeripheral) {
         let peripheralDelegate = PeripheralDelegate()
         peripheral.delegate = peripheralDelegate
         self.peripheral = peripheral
-        
+
         subscirbeToDelegateEvents(peripheralDelegate: peripheralDelegate)
-        
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+
+        UNUserNotificationCenter.current().requestAuthorization(options: [
+            .alert, .badge, .sound,
+        ]) { success, error in
             if success {
                 print("All set!")
             } else if let error {
@@ -85,54 +92,65 @@ class BluetoothTemperatureSensor {
             }
         }
     }
-    
-    private func subscirbeToDelegateEvents(peripheralDelegate: PeripheralDelegate) {
+
+    private func subscirbeToDelegateEvents(
+        peripheralDelegate: PeripheralDelegate
+    ) {
         Task { @MainActor [weak self] in
             for await event in peripheralDelegate.delegateEventStream {
                 guard let self else {
                     return
                 }
-                
+
                 switch event {
-                case .didDiscoverServices(error: let error):
+                case .didDiscoverServices(let error):
                     didDiscoverServices(error: error)
-                case .didDiscoverCharacteristicsFor(service: let service, error: let error):
-                    didDiscoverCharacteristicsFor(service: service, error: error)
-                case .didUpdateValueFor(characteristic: let characteristic, error: let error):
-                    didUpdateValueFor(characteristic: characteristic, error: error)
-                case .didWriteValueFor(characteristic: let characteristic, error: let error):
-                    didWriteValueFor(characteristic: characteristic, error: error)
+                case .didDiscoverCharacteristicsFor(let service, let error):
+                    didDiscoverCharacteristicsFor(
+                        service: service, error: error)
+                case .didUpdateValueFor(let characteristic, let error):
+                    didUpdateValueFor(
+                        characteristic: characteristic, error: error)
+                case .didWriteValueFor(let characteristic, let error):
+                    didWriteValueFor(
+                        characteristic: characteristic, error: error)
                 }
             }
         }
     }
-    
+
     func setAutoUpdateInterval(to newValue: UInt32) async throws {
         let bytes = withUnsafeBytes(of: newValue) { Array($0) }
-        
-        try await write(newValue == 0 ? Data() : Data(bytes), to: Self.autoUpdateCharacteristicUUID)
-        let autoUpdateIntervalData = try await read(from: Self.autoUpdateCharacteristicUUID)
-        
+
+        try await write(
+            newValue == 0 ? Data() : Data(bytes),
+            to: Self.autoUpdateCharacteristicUUID)
+        let autoUpdateIntervalData = try await read(
+            from: Self.autoUpdateCharacteristicUUID)
+
         autoUpdateInterval = autoUpdateIntervalData?.uInt32Value
     }
-    
+
     func setTargetValue(to newValue: Double?) async throws {
         refreshTargetValueProgressSubscription(for: newValue)
-        
+
         if let newValue {
-            let bytes = withUnsafeBytes(of: Float(newValue).bitPattern.littleEndian) { Array($0) }
+            let bytes = withUnsafeBytes(
+                of: Float(newValue).bitPattern.littleEndian
+            ) { Array($0) }
             try await write(Data(bytes), to: Self.targetValueCharacteristicUUID)
         } else {
             try await write(Data(), to: Self.targetValueCharacteristicUUID)
         }
-        
-        let targetValueData = try await read(from: Self.targetValueCharacteristicUUID)
-        
+
+        let targetValueData = try await read(
+            from: Self.targetValueCharacteristicUUID)
+
         targetValue = targetValueData?.floatValue.map(Double.init)
     }
-    
+
     private var targetValueProgressSubscription: Task<Void, Error>?
-    
+
     private func refreshTargetValueProgressSubscription(for newValue: Double?) {
         if newValue == nil {
             targetValueProgress = .notInProgress
@@ -140,40 +158,56 @@ class BluetoothTemperatureSensor {
             targetValueProgressSubscription = nil
             return
         }
-        
+
         guard targetValueProgressSubscription == nil else {
             return
         }
-        
+
         targetValueProgressSubscription?.cancel()
         targetValueProgressSubscription = Task { @MainActor [weak self] in
             guard let self else {
                 return
             }
-            
-            for try await targetValueProgressData in try subscribeToNotifications(from: Self.targetValueProgressCharacteristicUUID) {
-                switch targetValueProgressData?.first.flatMap(TargetValueProgress.init) {
+
+            for try await targetValueProgressData
+                in try subscribeToNotifications(
+                    from: Self.targetValueProgressCharacteristicUUID)
+            {
+                switch targetValueProgressData?.first.flatMap(
+                    TargetValueProgress.init)
+                {
                 case .none:
                     targetValueProgress = .notInProgress
                 case .some(let targetValueProgress):
-                    self.targetValueProgress = targetValueProgress
                     switch scenePhase {
                     case .background:
-                        sendLocalNotification()
+                        sendLocalNotification(oldTargetValueProgress: self.targetValueProgress, newTargetValueProgress: targetValueProgress)
                     case .inactive, .active:
                         break
                     @unknown default:
                         break
                     }
+                    self.targetValueProgress = targetValueProgress
                 }
             }
         }
     }
-    
-    private func sendLocalNotification() {
-        let content = UNMutableNotificationContent()
+
+    private func sendLocalNotification(
+        oldTargetValueProgress: TargetValueProgress,
+        newTargetValueProgress: TargetValueProgress
+    ) {
+        print(oldTargetValueProgress, newTargetValueProgress)
+        switch (oldTargetValueProgress, newTargetValueProgress) {
+        case (.onTheWay, .onPoint), (.onPoint, .passedThePoint), (.passedThePoint, .onPoint):
+            break
+        case (_, _):
+            return
+        }
         
-        switch targetValueProgress {
+        let content = UNMutableNotificationContent()
+
+        switch newTargetValueProgress {
         case .notInProgress, .onTheWay:
             return
         case .onPoint:
@@ -182,16 +216,18 @@ class BluetoothTemperatureSensor {
             content.title = "Target Value Passed"
         }
         if let targetValue {
-            switch targetValueProgress {
+            switch newTargetValueProgress {
             case .notInProgress, .onTheWay:
                 return
             case .onPoint:
-                content.subtitle = "The target value of \(targetValue) was reached"
+                content.subtitle =
+                    "The target value of \(targetValue) was reached"
             case .passedThePoint:
-                content.subtitle = "The target value of \(targetValue) was passed"
+                content.subtitle =
+                    "The target value of \(targetValue) was passed"
             }
         } else {
-            switch targetValueProgress {
+            switch newTargetValueProgress {
             case .notInProgress, .onTheWay:
                 return
             case .onPoint:
@@ -203,86 +239,108 @@ class BluetoothTemperatureSensor {
         content.sound = UNNotificationSound.default
 
         // show this notification five seconds from now
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(
+            timeInterval: 0.01, repeats: false)
 
         // choose a random identifier
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString, content: content, trigger: trigger)
 
         // add our notification request
         UNUserNotificationCenter.current().add(request)
+        print(request.content.title, request.content.subtitle)
     }
-    
+
     func didConnect() {
         peripheral.discoverServices([Self.serviceUUID])
         state = .connected
     }
-    
+
     func didFailToConnect(with error: Error?) {
         state = .failedConnection(error: error)
     }
-    
+
     func didDisconnect(with error: Error?) {
         continuations.removeAll()
         streamContinuations.removeAll()
         state = .failedConnection(error: error)
     }
-    
+
     private func didDiscoverServices(error: Error?) {
-        if let service = peripheral.services?.first(where: { $0.uuid == Self.serviceUUID }) {
+        if let service = peripheral.services?.first(where: {
+            $0.uuid == Self.serviceUUID
+        }) {
             self.peripheral.discoverCharacteristics(
                 [
                     Self.valueCharacteristicUUID,
                     Self.autoUpdateCharacteristicUUID,
                     Self.targetValueCharacteristicUUID,
-                    Self.targetValueProgressCharacteristicUUID
+                    Self.targetValueProgressCharacteristicUUID,
                 ],
                 for: service
             )
         }
     }
-    
-    private func didDiscoverCharacteristicsFor(service: CBService, error: Error?) {
+
+    private func didDiscoverCharacteristicsFor(
+        service: CBService, error: Error?
+    ) {
         if service.uuid == BluetoothTemperatureSensor.serviceUUID {
-            if service.characteristics?.contains(where: { $0.uuid == Self.valueCharacteristicUUID }) == true {
+            if service.characteristics?.contains(where: {
+                $0.uuid == Self.valueCharacteristicUUID
+            }) == true {
                 Task { @MainActor [weak self] in
-                    guard let stream = try self?.subscribeToNotifications(from: Self.valueCharacteristicUUID) else {
+                    guard
+                        let stream = try self?.subscribeToNotifications(
+                            from: Self.valueCharacteristicUUID)
+                    else {
                         return
                     }
-                    
+
                     for try await valueData in stream {
-                        self?.valueInCelcius = valueData?.floatValue.map(Double.init)
+                        let valueInCelcius = valueData?.floatValue.map(
+                            Double.init)
+                        self?.valueInCelcius = valueInCelcius
                     }
                 }
             }
-            
-            if service.characteristics?.contains(where: { $0.uuid == Self.autoUpdateCharacteristicUUID }) == true {
+
+            if service.characteristics?.contains(where: {
+                $0.uuid == Self.autoUpdateCharacteristicUUID
+            }) == true {
                 Task { @MainActor [weak self] in
                     guard let self else {
                         return
                     }
-                    
-                    let autoUpdateIntervalData = try await read(from: Self.autoUpdateCharacteristicUUID)
-                    
+
+                    let autoUpdateIntervalData = try await read(
+                        from: Self.autoUpdateCharacteristicUUID)
+
                     autoUpdateInterval = autoUpdateIntervalData?.uInt32Value
                 }
             }
-            
-            if service.characteristics?.contains(where: { $0.uuid == Self.targetValueCharacteristicUUID }) == true {
+
+            if service.characteristics?.contains(where: {
+                $0.uuid == Self.targetValueCharacteristicUUID
+            }) == true {
                 Task { @MainActor [weak self] in
                     guard let self else {
                         return
                     }
-                    
-                    let targetValueData = try await read(from: Self.targetValueCharacteristicUUID)
+
+                    let targetValueData = try await read(
+                        from: Self.targetValueCharacteristicUUID)
                     targetValue = (targetValueData?.floatValue).map(Double.init)
-                    
+
                     refreshTargetValueProgressSubscription(for: targetValue)
                 }
             }
         }
     }
-    
-    private func didUpdateValueFor(characteristic: CBCharacteristic, error: Error?) {
+
+    private func didUpdateValueFor(
+        characteristic: CBCharacteristic, error: Error?
+    ) {
         if let streamContinuation = streamContinuations[characteristic] {
             if let error {
                 streamContinuation.finish(throwing: error)
@@ -300,63 +358,85 @@ class BluetoothTemperatureSensor {
             continuations[characteristic] = nil
         }
     }
-    
-    private func didWriteValueFor(characteristic: CBCharacteristic, error: Error?) {
+
+    private func didWriteValueFor(
+        characteristic: CBCharacteristic, error: Error?
+    ) {
         if let error {
             continuations[characteristic]?.resume(throwing: error)
         } else {
-            continuations[characteristic]?.resume(returning: characteristic.value)
+            continuations[characteristic]?.resume(
+                returning: characteristic.value)
         }
         continuations[characteristic] = nil
     }
-    
-    private var continuations: [CBCharacteristic: UnsafeContinuation<Data?, Error>] = [:]
-    
+
+    private var continuations:
+        [CBCharacteristic: UnsafeContinuation<Data?, Error>] = [:]
+
     func write(_ value: Data, to uuid: CBUUID) async throws {
-        guard let characteristic = peripheral.services?.compactMap(\.characteristics).flatMap({$0}).first(where: { $0.uuid == uuid }) else {
+        guard
+            let characteristic = peripheral.services?.compactMap(
+                \.characteristics
+            ).flatMap({ $0 }).first(where: { $0.uuid == uuid })
+        else {
             throw BluetoothTemperatureSensorError.characteristicNotFound
         }
-        
+
         guard continuations[characteristic] == nil else {
             throw BluetoothTemperatureSensorError.characteristicInUse
         }
-        
-        _ = try await withUnsafeThrowingContinuation { (continuation: UnsafeContinuation<Data?, Error>) in
+
+        _ = try await withUnsafeThrowingContinuation {
+            (continuation: UnsafeContinuation<Data?, Error>) in
             Task { @MainActor in
                 continuations[characteristic] = continuation
-                peripheral.writeValue(value, for: characteristic, type: .withResponse)
+                peripheral.writeValue(
+                    value, for: characteristic, type: .withResponse)
             }
         }
     }
-    
+
     func read(from uuid: CBUUID) async throws -> Data? {
-        guard let characteristic = peripheral.services?.compactMap(\.characteristics).flatMap({$0}).first(where: { $0.uuid == uuid }) else {
+        guard
+            let characteristic = peripheral.services?.compactMap(
+                \.characteristics
+            ).flatMap({ $0 }).first(where: { $0.uuid == uuid })
+        else {
             throw BluetoothTemperatureSensorError.characteristicNotFound
         }
-        
+
         guard continuations[characteristic] == nil else {
             throw BluetoothTemperatureSensorError.characteristicInUse
         }
-        
-        return try await withUnsafeThrowingContinuation { (continuation: UnsafeContinuation<Data?, Error>) in
+
+        return try await withUnsafeThrowingContinuation {
+            (continuation: UnsafeContinuation<Data?, Error>) in
             Task { @MainActor in
                 continuations[characteristic] = continuation
                 peripheral.readValue(for: characteristic)
             }
         }
     }
-    
-    private var streamContinuations: [CBCharacteristic: AsyncThrowingStream<Data?, Error>.Continuation] = [:]
-    
-    func subscribeToNotifications(from uuid: CBUUID) throws -> AsyncThrowingStream<Data?, Error> {
-        guard let characteristic = peripheral.services?.compactMap(\.characteristics).flatMap({$0}).first(where: { $0.uuid == uuid }) else {
+
+    private var streamContinuations:
+        [CBCharacteristic: AsyncThrowingStream<Data?, Error>.Continuation] = [:]
+
+    func subscribeToNotifications(from uuid: CBUUID) throws
+        -> AsyncThrowingStream<Data?, Error>
+    {
+        guard
+            let characteristic = peripheral.services?.compactMap(
+                \.characteristics
+            ).flatMap({ $0 }).first(where: { $0.uuid == uuid })
+        else {
             throw BluetoothTemperatureSensorError.characteristicNotFound
         }
-        
+
         guard continuations[characteristic] == nil else {
             throw BluetoothTemperatureSensorError.characteristicInUse
         }
-        
+
         return .init { continuation in
             Task { @MainActor in
                 streamContinuations[characteristic] = continuation
@@ -376,10 +456,12 @@ extension BluetoothTemperatureSensor: Identifiable {
 }
 
 extension BluetoothTemperatureSensor: Hashable {
-    static func == (lhs: BluetoothTemperatureSensor, rhs: BluetoothTemperatureSensor) -> Bool {
+    static func == (
+        lhs: BluetoothTemperatureSensor, rhs: BluetoothTemperatureSensor
+    ) -> Bool {
         lhs.id == rhs.id
     }
-    
+
     func hash(into hasher: inout Hasher) {
         id.hash(into: &hasher)
     }
