@@ -1,8 +1,13 @@
 import Charts
 import SwiftUI
 
-struct TemperatureSensorCardView: View {
+struct TemperatureSensorDetailView: View {
     @Bindable var sensor: BluetoothTemperatureSensor
+    
+    @State var targetValue = "65"
+    @State var isTargetValueAlertShown = false
+
+    @FocusState var textFieldFocusState
 
     @Environment(\.scenePhase) var scenePhase
 
@@ -10,6 +15,8 @@ struct TemperatureSensorCardView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Sensor \(sensor.name ?? "Undefined")")
             Text("ID: \(sensor.id)")
+                .font(.caption)
+            Text("Connection state: \(sensor.state)")
                 .font(.caption)
             HStack {
                 Spacer()
@@ -20,6 +27,10 @@ struct TemperatureSensorCardView: View {
                 } else {
                     Text("No value received yet")
                 }
+            }
+            Button("Set new target value") {
+                targetValue = sensor.targetValueString
+                isTargetValueAlertShown = true
             }
             Chart(sensor.pastValues) {
                 LineMark(
@@ -39,13 +50,20 @@ struct TemperatureSensorCardView: View {
                 ShareSheet(items: [logFile])
             }
         }
-        .swipeActions {
-            Button {
-                sensor.exportLogsTapped()
-            } label: {
-                Text("Export Logs")
+        .alert(
+            "Set target value",
+            isPresented: $isTargetValueAlertShown
+        ) {
+            TextField("Target value", text: $targetValue)
+                .focused($textFieldFocusState)
+                .keyboardType(.decimalPad)
+            Button("Set new target value") {
+                Task {
+                    try await sensor.setTargetValue(to: targetValue)
+                }
             }
-        }
+            Button("Cancel", role: .cancel) {}
+        } message: {}
     }
 
     @MainActor

@@ -19,7 +19,7 @@ enum TargetValueProgress: UInt8 {
 struct LogValue: Identifiable {
     let value: Double
     let date: Date
-    
+
     var id: Date {
         date
     }
@@ -32,8 +32,6 @@ class BluetoothTemperatureSensor {
         string: "4fafc201-1fb5-459e-8fcc-c5c9c331914b")
     static let valueCharacteristicUUID = CBUUID(
         string: "beb5483e-36e1-4688-b7f5-ea07361b26a8")
-    static let autoUpdateCharacteristicUUID = CBUUID(
-        string: "f751d216-4044-461f-a4e6-548314d60679")
     static let targetValueCharacteristicUUID = CBUUID(
         string: "44e7fcba-4db0-4c41-b0a8-a34fc66afd74")
     static let targetValueProgressCharacteristicUUID = CBUUID(
@@ -46,69 +44,49 @@ class BluetoothTemperatureSensor {
         case failedConnection(error: Error?)
     }
 
-    private let peripheral: CBPeripheral
+    let peripheral: CBPeripheral
+    private weak var manager: BluetoothTemperatureSensorManager?
 
     var state: ConnectionState = .disconnected
-    
+
     var pastValues = [LogValue]() {
         didSet {
             let now = Date()
             if let oldestValue = pastValues.first,
-               oldestValue.date.distance(to: now) > 30*60 {
+                oldestValue.date.distance(to: now) > 30 * 60
+            {
                 pastValues = pastValues.filter {
-                    $0.date.distance(to: now) < 30*60
+                    $0.date.distance(to: now) < 30 * 60
                 }
             }
         }
     }
-    
+
     var valueInCelcius: Double? {
         didSet {
             logger.log(valueInCelcius)
         }
     }
-    
-    var autoUpdateInterval: UInt32?
-    
+
     private var setTargetDebounceTask: Task<Void, Error>?
-    
-    var targetValue: Double? {
-        didSet {
-            guard targetValue != oldValue else {
-                return
-            }
-            setTargetDebounceTask?.cancel()
-            setTargetDebounceTask = Task {
-                try await Task.sleep(for: .milliseconds(500))
-                try await setTargetValue(to: targetValue)
-            }
-        }
-    }
+
+    var targetValue: Double?
     var targetValueProgress: TargetValueProgress = .notInProgress
-    
+
     var scenePhase: ScenePhase = .background
 
     var targetValueString: String {
-        get {
-            targetValue?.formatted(.number.precision(.fractionLength(3))) ?? ""
-        }
-        set {
-            if let newTargetValue = try? Double(newValue, format: .number) {
-                targetValue = newTargetValue
-            } else if newValue == "" {
-                targetValue = nil
-            }
-        }
+        targetValue?.formatted(.number.precision(.fractionLength(3))) ?? ""
     }
 
     var name: String? {
         peripheral.name
     }
-    
+
     let logger: CsvLogger
-    
+
     var logFile: URL?
-    
+
     var hasLogFileToExport: Bool {
         get {
             logFile != nil
@@ -120,13 +98,14 @@ class BluetoothTemperatureSensor {
         }
     }
 
-    init(peripheral: CBPeripheral) {
+    init(peripheral: CBPeripheral, manager: BluetoothTemperatureSensorManager) {
         let peripheralDelegate = PeripheralDelegate()
         peripheral.delegate = peripheralDelegate
-        
+
         logger = CsvLogger(fileName: "\(peripheral.name ?? "Unknown").csv")
-        
+
         self.peripheral = peripheral
+        self.manager = manager
 
         subscirbeToDelegateEvents(peripheralDelegate: peripheralDelegate)
 
@@ -166,17 +145,17 @@ class BluetoothTemperatureSensor {
             }
         }
     }
-
-    func setAutoUpdateInterval(to newValue: UInt32) async throws {
-        let bytes = withUnsafeBytes(of: newValue) { Array($0) }
-
-        try await write(
-            newValue == 0 ? Data() : Data(bytes),
-            to: Self.autoUpdateCharacteristicUUID)
-        let autoUpdateIntervalData = try await read(
-            from: Self.autoUpdateCharacteristicUUID)
-
-        autoUpdateInterval = autoUpdateIntervalData?.uInt32Value
+    
+    func setTargetValue(to newValue: String) async throws {
+        let newTargetValue = try Double(newValue, format: .number)
+        
+        guard targetValue != newTargetValue else {
+            return
+        }
+        
+        targetValue = newTargetValue
+        
+        try await setTargetValue(to: targetValue)
     }
 
     func setTargetValue(to newValue: Double?) async throws {
@@ -229,7 +208,9 @@ class BluetoothTemperatureSensor {
                 case .some(let targetValueProgress):
                     switch scenePhase {
                     case .background:
-                        sendLocalNotification(oldTargetValueProgress: self.targetValueProgress, newTargetValueProgress: targetValueProgress)
+                        sendLocalNotification(
+                            oldTargetValueProgress: self.targetValueProgress,
+                            newTargetValueProgress: targetValueProgress)
                     case .inactive, .active:
                         break
                     @unknown default:
@@ -241,17 +222,31 @@ class BluetoothTemperatureSensor {
         }
     }
 
+    func didFindPeripheralAgain(with advertisementData: [String: Any]) {
+        if let manufacturerData = advertisementData[
+            CBAdvertisementDataManufacturerDataKey] as? Data,
+            let stringValue = String(data: manufacturerData, encoding: .utf8),
+            let newValueInCelcius = Double(stringValue),
+           newValueInCelcius != valueInCelcius
+        {
+            self.valueInCelcius = newValueInCelcius
+            pastValues.append(
+                LogValue(value: newValueInCelcius, date: Date()))
+        }
+    }
+
     private func sendLocalNotification(
         oldTargetValueProgress: TargetValueProgress,
         newTargetValueProgress: TargetValueProgress
     ) {
         switch (oldTargetValueProgress, newTargetValueProgress) {
-        case (.onTheWay, .onPoint), (.onPoint, .passedThePoint), (.passedThePoint, .onPoint):
+        case (.onTheWay, .onPoint), (.onPoint, .passedThePoint),
+            (.passedThePoint, .onPoint):
             break
         case (_, _):
             return
         }
-        
+
         let content = UNMutableNotificationContent()
 
         switch newTargetValueProgress {
@@ -296,6 +291,14 @@ class BluetoothTemperatureSensor {
         // add our notification request
         UNUserNotificationCenter.current().add(request)
     }
+    
+    func connect() async throws {
+        try await manager?.connect(to: self)
+    }
+    
+    func disconnect() {
+        manager?.disconnect(from: self)
+    }
 
     func didConnect() {
         peripheral.discoverServices([Self.serviceUUID])
@@ -319,7 +322,6 @@ class BluetoothTemperatureSensor {
             self.peripheral.discoverCharacteristics(
                 [
                     Self.valueCharacteristicUUID,
-                    Self.autoUpdateCharacteristicUUID,
                     Self.targetValueCharacteristicUUID,
                     Self.targetValueProgressCharacteristicUUID,
                 ],
@@ -348,24 +350,10 @@ class BluetoothTemperatureSensor {
                             Double.init)
                         self?.valueInCelcius = valueInCelcius
                         if let valueInCelcius {
-                            self?.pastValues.append(LogValue(value: valueInCelcius, date: Date()))
+                            self?.pastValues.append(
+                                LogValue(value: valueInCelcius, date: Date()))
                         }
                     }
-                }
-            }
-
-            if service.characteristics?.contains(where: {
-                $0.uuid == Self.autoUpdateCharacteristicUUID
-            }) == true {
-                Task { @MainActor [weak self] in
-                    guard let self else {
-                        return
-                    }
-
-                    let autoUpdateIntervalData = try await read(
-                        from: Self.autoUpdateCharacteristicUUID)
-
-                    autoUpdateInterval = autoUpdateIntervalData?.uInt32Value
                 }
             }
 
@@ -424,6 +412,22 @@ class BluetoothTemperatureSensor {
         [CBCharacteristic: UnsafeContinuation<Data?, Error>] = [:]
 
     func write(_ value: Data, to uuid: CBUUID) async throws {
+        let shouldDisconnect: Bool
+        
+        switch state {
+        case .disconnected, .connecting, .failedConnection:
+            try await connect()
+            shouldDisconnect = true
+        case .connected:
+            shouldDisconnect = false
+        }
+        
+        defer {
+            if shouldDisconnect {
+                disconnect()
+            }
+        }
+        
         guard
             let characteristic = peripheral.services?.compactMap(
                 \.characteristics
@@ -496,7 +500,7 @@ class BluetoothTemperatureSensor {
             }
         }
     }
-    
+
     func exportLogsTapped() {
         logFile = logger.logFileURL
     }

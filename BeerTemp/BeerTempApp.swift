@@ -11,9 +11,7 @@ import SwiftUI
 struct BeerTempApp: App {
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                TemperatureSensorListView(sensorManager: BluetoothTemperatureSensorManager())
-            }
+            TemperatureSensorListView(sensorManager: BluetoothTemperatureSensorManager())
         }
     }
 }

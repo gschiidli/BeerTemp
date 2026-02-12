@@ -15,6 +15,9 @@ class BluetoothTemperatureSensorManager {
         .init(sensors)
     }
     
+    private var continuations:
+        [CBPeripheral: UnsafeContinuation<Void, Error>] = [:]
+    
     private let centralManager: CBCentralManager
     
     init() {
@@ -35,8 +38,8 @@ class BluetoothTemperatureSensorManager {
                 switch event {
                 case .didUpdateState:
                     didUpdateState(for: centralManager)
-                case let .didDiscover(peripheral, _, _):
-                    didDiscover(peripheral: peripheral, on: centralManager)
+                case let .didDiscover(peripheral, advertisementData, _):
+                    didDiscover(peripheral: peripheral, advertisementData: advertisementData, on: centralManager)
                 case let .didConnect(peripheral):
                     didConnect(to: peripheral, on: centralManager)
                 case let .didFailToConnect(peripheral, error):
@@ -65,26 +68,24 @@ class BluetoothTemperatureSensorManager {
             throw BluetoothTemperatureSensorManagerError.invalidState(state: centralManager.state)
         case .poweredOn:
             centralManager.scanForPeripherals(withServices: [BluetoothTemperatureSensor.serviceUUID])
-            
-            try await Task.sleep(for: .seconds(5))
-            
-            centralManager.stopScan()
+//            , options: [CBCentralManagerScanOptionAllowDuplicatesKey: NSNumber(booleanLiteral: true)])
         @unknown default:
             throw BluetoothTemperatureSensorManagerError.invalidState(state: centralManager.state)
         }
     }
     
-    private func didDiscover(peripheral: CBPeripheral, on centralManager: CBCentralManager) {
-        guard sensors.contains(where: { $0.id == peripheral.identifier }) == false else {
-            return
+    private func didDiscover(peripheral: CBPeripheral, advertisementData:[String : Any], on centralManager: CBCentralManager) {
+        if let foundSensor = sensors.first(where: { $0.id == peripheral.identifier }) {
+            foundSensor.didFindPeripheralAgain(with: advertisementData)
+        } else {
+            let sensor = BluetoothTemperatureSensor(peripheral: peripheral, manager: self)
+            sensors.insert(sensor)
         }
-        
-        let sensor = BluetoothTemperatureSensor(peripheral: peripheral)
-        centralManager.connect(peripheral)
-        sensors.insert(sensor)
     }
     
     private func didConnect(to peripheral: CBPeripheral, on centralManager: CBCentralManager) {
+        continuations[peripheral]?.resume(returning: ())
+        
         guard let sensor = sensors.first(where: { $0.id == peripheral.identifier }) else {
             return
         }
@@ -93,13 +94,15 @@ class BluetoothTemperatureSensorManager {
     }
     
     private func didFailToConnect(to peripheral: CBPeripheral, with error: Error?, on centralManager: CBCentralManager) {
+        if let error {
+            continuations[peripheral]?.resume(throwing: error)
+        }
+        
         guard let sensor = sensors.first(where: { $0.id == peripheral.identifier }) else {
             return
         }
         
         sensor.didFailToConnect(with: error)
-        
-        centralManager.connect(peripheral)
     }
     
     private func didDisconnect(from peripheral: CBPeripheral, with error: Error?, on centralManager: CBCentralManager) {
@@ -108,8 +111,17 @@ class BluetoothTemperatureSensorManager {
         }
         
         sensor.didDisconnect(with: error)
-        
-        centralManager.connect(peripheral)
+    }
+    
+    func connect(to sensor: BluetoothTemperatureSensor) async throws {
+        try await withUnsafeThrowingContinuation { (continuation: UnsafeContinuation<Void, Error>) in
+            continuations[sensor.peripheral] = continuation
+            centralManager.connect(sensor.peripheral)
+        }
+    }
+    
+    func disconnect(from sensor: BluetoothTemperatureSensor) {
+        centralManager.cancelPeripheralConnection(sensor.peripheral)
     }
 }
 

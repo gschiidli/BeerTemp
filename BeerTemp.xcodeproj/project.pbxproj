@@ -19,6 +19,7 @@
 		527B71522C63A41F003CC99D /* TemperatureSensorCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527B71512C63A41F003CC99D /* TemperatureSensorCardView.swift */; };
 		52C6CF352D4EA432004BDF11 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6CF342D4EA430004BDF11 /* Logger.swift */; };
 		52C6CF372D4EA64A004BDF11 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C6CF362D4EA647004BDF11 /* ShareSheet.swift */; };
+		52CE32342DCF4F07006D5951 /* TemperatureSensorDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52CE32332DCF4F07006D5951 /* TemperatureSensorDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		527B71512C63A41F003CC99D /* TemperatureSensorCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureSensorCardView.swift; sourceTree = "<group>"; };
 		52C6CF342D4EA430004BDF11 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		52C6CF362D4EA647004BDF11 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
+		52CE32332DCF4F07006D5951 /* TemperatureSensorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureSensorDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				527B71362C62A0A5003CC99D /* BeerTempApp.swift */,
 				527B71382C62A0A5003CC99D /* TemperatureSensorListView.swift */,
 				527B71512C63A41F003CC99D /* TemperatureSensorCardView.swift */,
+				52CE32332DCF4F07006D5951 /* TemperatureSensorDetailView.swift */,
 				52C6CF362D4EA647004BDF11 /* ShareSheet.swift */,
 				527B714E2C6396D1003CC99D /* Bluetooth */,
 				527B714A2C639617003CC99D /* Data+Additions.swift */,
@@ -176,6 +179,7 @@
 				527B714D2C6396CA003CC99D /* CentralManagerDelegate.swift in Sources */,
 				52C6CF372D4EA64A004BDF11 /* ShareSheet.swift in Sources */,
 				527B71522C63A41F003CC99D /* TemperatureSensorCardView.swift in Sources */,
+				52CE32342DCF4F07006D5951 /* TemperatureSensorDetailView.swift in Sources */,
 				527B71392C62A0A5003CC99D /* TemperatureSensorListView.swift in Sources */,
 				527B71502C63A0DE003CC99D /* PeripheralDelegate.swift in Sources */,
 				52C6CF352D4EA432004BDF11 /* Logger.swift in Sources */,
