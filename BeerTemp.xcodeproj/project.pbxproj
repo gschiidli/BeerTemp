@@ -22,6 +22,7 @@
 		BB0000012F000010000BB001 /* BluetoothClient+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000042F000040000BB001 /* BluetoothClient+Live.swift */; };
 		BB0000022F000020000BB001 /* LoggerClient+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000052F000050000BB001 /* LoggerClient+Live.swift */; };
 		BB0000032F000030000BB001 /* NotificationClient+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000062F000060000BB001 /* NotificationClient+Live.swift */; };
+		CC0000012F000010000CC001 /* BluetoothClient+Simulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000022F000020000CC001 /* BluetoothClient+Simulator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		BB0000042F000040000BB001 /* BluetoothClient+Live.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BluetoothClient+Live.swift"; sourceTree = "<group>"; };
 		BB0000052F000050000BB001 /* LoggerClient+Live.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoggerClient+Live.swift"; sourceTree = "<group>"; };
 		BB0000062F000060000BB001 /* NotificationClient+Live.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationClient+Live.swift"; sourceTree = "<group>"; };
+		CC0000022F000020000CC001 /* BluetoothClient+Simulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BluetoothClient+Simulator.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 				BB0000042F000040000BB001 /* BluetoothClient+Live.swift */,
 				BB0000052F000050000BB001 /* LoggerClient+Live.swift */,
 				BB0000062F000060000BB001 /* NotificationClient+Live.swift */,
+				CC0000022F000020000CC001 /* BluetoothClient+Simulator.swift */,
 			);
 			path = Dependencies;
 			sourceTree = "<group>";
@@ -207,6 +210,7 @@
 				BB0000012F000010000BB001 /* BluetoothClient+Live.swift in Sources */,
 				BB0000022F000020000BB001 /* LoggerClient+Live.swift in Sources */,
 				BB0000032F000030000BB001 /* NotificationClient+Live.swift in Sources */,
+				CC0000012F000010000CC001 /* BluetoothClient+Simulator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

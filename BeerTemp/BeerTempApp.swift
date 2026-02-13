@@ -4,9 +4,19 @@ import SwiftUI
 
 @main
 struct BeerTempApp: App {
-  let store = Store(initialState: AppFeature.State()) {
-    AppFeature()
-  }
+  let store: StoreOf<AppFeature> = {
+    #if targetEnvironment(simulator)
+      Store(initialState: AppFeature.State()) {
+        AppFeature()
+      } withDependencies: {
+        $0.bluetoothClient = .simulator
+      }
+    #else
+      Store(initialState: AppFeature.State()) {
+        AppFeature()
+      }
+    #endif
+  }()
 
   var body: some Scene {
     WindowGroup {
