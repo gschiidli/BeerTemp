@@ -8,9 +8,14 @@ struct TemperatureSensorCardView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 4) {
-      Text("Sensor \(store.name ?? "Undefined")")
-      Text("ID: \(store.id)")
-        .font(.caption)
+      HStack {
+        Text(store.name ?? "Unknown Sensor")
+          .font(.headline)
+        Spacer()
+        Circle()
+          .fill(indicatorColor)
+          .frame(width: 12, height: 12)
+      }
       HStack {
         Spacer()
         if let value = store.valueInCelcius {
@@ -21,16 +26,31 @@ struct TemperatureSensorCardView: View {
           Text("No value received yet")
         }
       }
-      Chart(store.pastValues) {
-        LineMark(
-          x: .value("Month", $0.date),
-          y: .value("Temperature in °C", $0.value)
-        )
+      Chart {
+        ForEach(store.pastValues) { logValue in
+          LineMark(
+            x: .value("Time", logValue.date),
+            y: .value("Temperature in °C", logValue.value)
+          )
+          .interpolationMethod(.catmullRom)
+        }
+        if let target = store.targetValue {
+          RectangleMark(
+            yStart: .value("Lower", target - 1),
+            yEnd: .value("Upper", target + 1)
+          )
+          .foregroundStyle(indicatorColor.opacity(0.15))
+          RuleMark(y: .value("Target", target))
+            .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 3]))
+            .foregroundStyle(indicatorColor)
+        }
       }
+      .chartXAxis(.hidden)
+      .chartYScale(domain: chartYDomain)
     }
     .padding()
-    .background(backgroundColor)
-    .cornerRadius(3.0)
+    .background(Color(.secondarySystemBackground))
+    .clipShape(RoundedRectangle(cornerRadius: 16))
     .sheet(isPresented: Binding(
       get: { store.isShareSheetPresented },
       set: { newValue in
@@ -50,7 +70,19 @@ struct TemperatureSensorCardView: View {
     }
   }
 
-  private var backgroundColor: Color {
+  private var chartYDomain: ClosedRange<Double> {
+    let values = store.pastValues.map(\.value)
+    var lo = values.min() ?? 0
+    var hi = values.max() ?? 100
+    if let target = store.targetValue {
+      lo = min(lo, target - 1)
+      hi = max(hi, target + 1)
+    }
+    let padding = max((hi - lo) * 0.1, 0.5)
+    return (lo - padding)...(hi + padding)
+  }
+
+  private var indicatorColor: Color {
     switch store.targetValueProgress {
     case .onTheWay:
       Color.orange
