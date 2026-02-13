@@ -10,6 +10,12 @@ xcuserdata/
 # Claude Code
 .claude/settings.local.json
 
+# Local tmp
+tmp/
+
+# XcodeBuildMCP
+.xcodebuildmcp/
+
 # Swift Package Manager
 .build/
 .swiftpm/

@@ -65,6 +65,19 @@ Built with **The Composable Architecture (TCA)** using unidirectional data flow,
 - Target value characteristic: `44e7fcba-4db0-4c41-b0a8-a34fc66afd74` (read/write)
 - Target progress characteristic: `6d913149-d0fc-4d85-9dd5-615248f2bee0` (read/notify)
 
+## Simulator & MCP
+
+Use **XcodeBuildMCP** (configured in `.xcodebuildmcp/config.yaml`) for all simulator interactions:
+- Build/run: `build_sim`, `build_run_sim`
+- Screenshots: `screenshot` (use `returnFormat: "base64"` to view inline)
+- UI inspection: `snapshot_ui` to get the accessibility hierarchy with coordinates
+- UI automation: `tap_coordinate`, `swipe`, `type_text` etc. (requires `ui-automation` workflow)
+- Logs: `start_sim_log_cap` / `stop_sim_log_cap`
+
+Session defaults (workspace, scheme, simulator, bundleId) are persisted in `.xcodebuildmcp/config.yaml`. Prefer MCP tools over raw `xcrun simctl` or `xcodebuild` commands.
+
+Save screenshots to the local `tmp/` folder (gitignored).
+
 ## Frameworks
 
 - **TCA**: swift-composable-architecture (1.17.0+) via local SPM package

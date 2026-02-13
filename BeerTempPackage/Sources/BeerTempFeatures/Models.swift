@@ -42,7 +42,7 @@ public struct TemperatureExtrapolation: Equatable, Sendable {
   public static func compute(
     pastValues: [LogValue],
     targetValue: Double? = nil,
-    fitWindow: TimeInterval = 10,
+    fitWindow: TimeInterval = 30,
     extrapolationWindow: TimeInterval = 120
   ) -> TemperatureExtrapolation? {
     guard pastValues.count >= 3 else { return nil }

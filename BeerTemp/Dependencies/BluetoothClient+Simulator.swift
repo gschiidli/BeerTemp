@@ -64,9 +64,19 @@ import Foundation
     func emitDiscoveries(continuation: AsyncStream<DiscoveredSensor>.Continuation) async {
         while isRunning {
           let elapsed = Date().timeIntervalSince(startTime)
-          // Saturating exponential: 20 + 55 * (1 - e^(-0.001*t))
-          // Asymptote ~75°C, slow rise
-          let temp = 20.0 + 55.0 * (1.0 - exp(-0.001 * elapsed))
+          let temp: Double
+          // Phase 1: Rise from 20°C toward 80°C on a saturating exponential
+          // T = 20 + 60 * (1 - e^(-0.05*t)), reaches ~60°C around t≈60s
+          let rising = 20.0 + 60.0 * (1.0 - exp(-0.05 * elapsed))
+          if rising < 59.5 {
+            temp = rising
+          } else {
+            // Phase 2: Heater off — exponential decay from 60°C toward 20°C
+            let tSwitch = -log(1.0 - 39.5 / 60.0) / 0.05
+            let decayElapsed = elapsed - tSwitch
+            // T = 20 + 40 * e^(-0.005*t), slow cool-down
+            temp = 20.0 + 40.0 * exp(-0.005 * decayElapsed)
+          }
           let noise = Double.random(in: -0.05...0.05)
           continuation.yield(
             DiscoveredSensor(
