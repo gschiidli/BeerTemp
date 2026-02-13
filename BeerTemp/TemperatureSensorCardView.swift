@@ -5,6 +5,7 @@ import SwiftUI
 
 struct TemperatureSensorCardView: View {
   let store: StoreOf<SensorCard>
+  @State private var scrollPosition: Date = Date().addingTimeInterval(-120)
 
   var body: some View {
     VStack(alignment: .leading, spacing: 4) {
@@ -32,9 +33,22 @@ struct TemperatureSensorCardView: View {
         ForEach(store.pastValues) { logValue in
           LineMark(
             x: .value("Time", logValue.date),
-            y: .value("Temperature in °C", logValue.value)
+            y: .value("Temperature in °C", logValue.value),
+            series: .value("Series", "Measured")
           )
           .interpolationMethod(.monotone)
+        }
+        if let extrapolation {
+          ForEach(Array(extrapolation.points.enumerated()), id: \.offset) { _, point in
+            LineMark(
+              x: .value("Time", point.date),
+              y: .value("Temperature in °C", point.value),
+              series: .value("Series", "Extrapolation")
+            )
+            .interpolationMethod(.monotone)
+            .foregroundStyle(.gray.opacity(0.3))
+            .lineStyle(StrokeStyle(lineWidth: 1.5))
+          }
         }
         if let target = store.targetValue {
           RectangleMark(
@@ -48,7 +62,14 @@ struct TemperatureSensorCardView: View {
         }
       }
       .chartXAxis(.hidden)
+      .chartXScale(domain: chartXDomain)
+      .chartScrollableAxes(.horizontal)
+      .chartXVisibleDomain(length: 240)
+      .chartScrollPosition(x: $scrollPosition)
       .chartYScale(domain: chartYDomain)
+      .onChange(of: store.pastValues.last?.date) { _, newDate in
+        scrollPosition = (newDate ?? Date()).addingTimeInterval(-120)
+      }
     }
     .padding()
     .background(Color(.secondarySystemBackground))
@@ -72,8 +93,28 @@ struct TemperatureSensorCardView: View {
     }
   }
 
+  private var extrapolation: TemperatureExtrapolation? {
+    TemperatureExtrapolation.compute(
+      pastValues: store.pastValues,
+      targetValue: store.targetValue
+    )
+  }
+
+
+  private var chartXDomain: ClosedRange<Date> {
+    let now = store.pastValues.last?.date ?? Date()
+    let dataStart = store.pastValues.first?.date ?? now
+    let extEnd = extrapolation?.points.last?.date ?? now
+    let lo = min(dataStart, now.addingTimeInterval(-120))
+    let hi = max(extEnd, now.addingTimeInterval(120))
+    return lo...hi
+  }
+
   private var chartYDomain: ClosedRange<Double> {
-    let values = store.pastValues.map(\.value)
+    var values = store.pastValues.map(\.value)
+    if let ext = extrapolation {
+      values.append(contentsOf: ext.points.map(\.value))
+    }
     var lo = values.min() ?? 0
     var hi = values.max() ?? 100
     if let target = store.targetValue {
