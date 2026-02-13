@@ -1,17 +1,18 @@
-//
-//  BeerTempApp.swift
-//  BeerTemp
-//
-//  Created by Konstantin Braun on 06.08.24.
-//
-
+import BeerTempFeatures
+import ComposableArchitecture
 import SwiftUI
 
 @main
 struct BeerTempApp: App {
-    var body: some Scene {
-        WindowGroup {
-            TemperatureSensorListView(sensorManager: BluetoothTemperatureSensorManager())
-        }
+  let store = Store(initialState: AppFeature.State()) {
+    AppFeature()
+  }
+
+  var body: some Scene {
+    WindowGroup {
+      TemperatureSensorListView(
+        store: store.scope(state: \.sensorList, action: \.sensorList)
+      )
     }
+  }
 }

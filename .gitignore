@@ -1,0 +1,16 @@
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+*.xcworkspace/xcshareddata/swiftpm/
+xcuserdata/
+
+# Claude Code
+.claude/settings.local.json
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved

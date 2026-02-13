@@ -1,8 +1,8 @@
 import Foundation
 import CoreBluetooth
 
-class PeripheralDelegate: NSObject {
-    enum DelegateEvents {
+final class PeripheralDelegate: NSObject, @unchecked Sendable {
+    enum DelegateEvents: @unchecked Sendable {
         case didDiscoverServices(error: Error?)
         case didDiscoverCharacteristicsFor(service: CBService, error: Error?)
         case didUpdateValueFor(characteristic: CBCharacteristic, error: Error?)

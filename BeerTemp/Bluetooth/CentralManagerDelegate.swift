@@ -1,8 +1,8 @@
 import Foundation
 import CoreBluetooth
 
-class CentralManagerDelegate: NSObject {
-    enum DelegateEvents {
+final class CentralManagerDelegate: NSObject, @unchecked Sendable {
+    enum DelegateEvents: @unchecked Sendable {
         case didUpdateState
         case didDiscover(peripheral: CBPeripheral, advertisementData: [String : Any], rssi: Double)
         case didConnect(peripheral: CBPeripheral)
