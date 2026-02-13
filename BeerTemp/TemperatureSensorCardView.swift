@@ -12,9 +12,11 @@ struct TemperatureSensorCardView: View {
         Text(store.name ?? "Unknown Sensor")
           .font(.headline)
         Spacer()
-        Circle()
-          .fill(indicatorColor)
-          .frame(width: 12, height: 12)
+        if store.targetValue != nil {
+          Circle()
+            .fill(indicatorColor)
+            .frame(width: 12, height: 12)
+        }
       }
       HStack {
         Spacer()
@@ -32,7 +34,7 @@ struct TemperatureSensorCardView: View {
             x: .value("Time", logValue.date),
             y: .value("Temperature in °C", logValue.value)
           )
-          .interpolationMethod(.catmullRom)
+          .interpolationMethod(.monotone)
         }
         if let target = store.targetValue {
           RectangleMark(
@@ -83,15 +85,14 @@ struct TemperatureSensorCardView: View {
   }
 
   private var indicatorColor: Color {
-    switch store.targetValueProgress {
-    case .onTheWay:
-      Color.orange
-    case .onPoint:
-      Color.green
-    case .passedThePoint:
-      Color.red
-    case .notInProgress:
-      Color.secondary
+    guard let target = store.targetValue, let temp = store.valueInCelcius else {
+      return .secondary
+    }
+    let diff = abs(temp - target)
+    if diff <= 1 {
+      return .green
+    } else {
+      return .orange
     }
   }
 }

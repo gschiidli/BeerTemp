@@ -15,7 +15,6 @@ public struct SensorList {
   }
 
   public enum Action {
-    case connectResponse(id: UUID, Result<Void, any Error>)
     case onAppear
     case path(StackActionOf<SensorDetail>)
     case pullToRefreshTriggered
@@ -29,10 +28,7 @@ public struct SensorList {
   }
 
   enum CancelID: Hashable {
-    case connection(UUID)
     case scanning
-    case targetProgressSubscription(UUID)
-    case temperatureSubscription(UUID)
   }
 
   @Dependency(\.bluetoothClient) var bluetoothClient
@@ -72,6 +68,15 @@ public struct SensorList {
             state.sensors[id: sensor.id]?.pastValues.append(logValue)
             trimPastValues(&state.sensors[id: sensor.id]!.pastValues)
 
+            for id in state.path.ids {
+              if state.path[id: id]?.sensorID == sensor.id {
+                state.path[id: id]?.valueInCelcius = temp
+                let detailLogValue = LogValue(id: uuid(), value: temp, date: date.now)
+                state.path[id: id]?.pastValues.append(detailLogValue)
+                trimPastValues(&state.path[id: id]!.pastValues)
+              }
+            }
+
             let name = state.sensors[id: sensor.id]?.name ?? "Unknown"
             let loggerClient = loggerClient
             return .run { _ in
@@ -100,51 +105,20 @@ public struct SensorList {
         return .none
 
       case let .sensorTapped(id):
-        guard state.sensors[id: id] != nil else { return .none }
-        state.sensors[id: id]?.connectionState = .connecting
-        let bluetoothClient = bluetoothClient
-        return .run { send in
-          try await bluetoothClient.connect(id)
-          await send(.connectResponse(id: id, .success(())))
-        } catch: { error, send in
-          await send(.connectResponse(id: id, .failure(error)))
-        }
-        .cancellable(id: CancelID.connection(id))
-
-      case let .connectResponse(id, .success):
-        state.sensors[id: id]?.connectionState = .connected
-
         guard let sensor = state.sensors[id: id] else { return .none }
+        // Prevent double-push if already on detail for this sensor
+        guard !state.path.ids.contains(where: { state.path[id: $0]?.sensorID == id }) else {
+          return .none
+        }
         let detailState = SensorDetail.State(
           sensorID: id,
           name: sensor.name,
           valueInCelcius: sensor.valueInCelcius,
           targetValue: sensor.targetValue,
           targetValueProgress: sensor.targetValueProgress,
-          pastValues: sensor.pastValues,
-          connectionState: .connected
+          pastValues: sensor.pastValues
         )
         state.path.append(detailState)
-
-        let bluetoothClient = bluetoothClient
-        return .merge(
-          .run { send in
-            for await temp in bluetoothClient.temperatureUpdates(id) {
-              await send(.temperatureUpdated(sensorID: id, temp))
-            }
-          }
-          .cancellable(id: CancelID.temperatureSubscription(id)),
-          .run { send in
-            for await progress in bluetoothClient.targetValueProgressUpdates(id) {
-              await send(.targetProgressUpdated(sensorID: id, progress))
-            }
-          }
-          .cancellable(id: CancelID.targetProgressSubscription(id))
-        )
-
-      case let .connectResponse(id, .failure(error)):
-        state.sensors[id: id]?.connectionState = .failedConnection(
-          errorDescription: error.localizedDescription)
         return .none
 
       case let .temperatureUpdated(sensorID, temperature):

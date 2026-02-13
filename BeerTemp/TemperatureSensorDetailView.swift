@@ -7,35 +7,55 @@ struct TemperatureSensorDetailView: View {
   @Bindable var store: StoreOf<SensorDetail>
 
   var body: some View {
-    VStack(alignment: .leading, spacing: 4) {
-      Text("Sensor \(store.name ?? "Undefined")")
-      Text("ID: \(store.sensorID)")
-        .font(.caption)
-      Text("Connection state: \(connectionStateText)")
-        .font(.caption)
+    VStack(alignment: .leading, spacing: 12) {
       HStack {
-        Spacer()
         if let value = store.valueInCelcius {
           Text(
             "\(value.formatted(.number.precision(.fractionLength(3)))) °C"
           )
+          .font(.title2.monospacedDigit())
         } else {
           Text("No value received yet")
+            .foregroundStyle(.secondary)
+        }
+        Spacer()
+        if store.targetValue != nil {
+          Circle()
+            .fill(indicatorColor)
+            .frame(width: 12, height: 12)
         }
       }
-      Button("Set new target value") {
-        store.send(.setTargetButtonTapped)
+      Chart {
+        ForEach(store.pastValues) { logValue in
+          LineMark(
+            x: .value("Time", logValue.date),
+            y: .value("Temperature in °C", logValue.value)
+          )
+          .interpolationMethod(.monotone)
+        }
+        if let target = store.targetValue {
+          RectangleMark(
+            yStart: .value("Lower", target - 1),
+            yEnd: .value("Upper", target + 1)
+          )
+          .foregroundStyle(indicatorColor.opacity(0.15))
+          RuleMark(y: .value("Target", target))
+            .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 3]))
+            .foregroundStyle(indicatorColor)
+        }
       }
-      Chart(store.pastValues) {
-        LineMark(
-          x: .value("Month", $0.date),
-          y: .value("Temperature in °C", $0.value)
-        )
-      }
+      .chartXAxis(.hidden)
+      .chartYScale(domain: chartYDomain)
     }
     .padding()
-    .background(backgroundColor)
-    .cornerRadius(3.0)
+    .navigationTitle(store.name ?? "Unknown Sensor")
+    .toolbar {
+      Button {
+        store.send(.setTargetButtonTapped)
+      } label: {
+        Image(systemName: "target")
+      }
+    }
     .sheet(isPresented: Binding(
       get: { store.isShareSheetPresented },
       set: { newValue in
@@ -59,33 +79,27 @@ struct TemperatureSensorDetailView: View {
     } message: {}
   }
 
-  private var backgroundColor: Color {
-    switch store.targetValueProgress {
-    case .onTheWay:
-      Color.orange
-    case .onPoint:
-      Color.green
-    case .passedThePoint:
-      Color.red
-    case .notInProgress:
-      Color.secondary
+  private var chartYDomain: ClosedRange<Double> {
+    let values = store.pastValues.map(\.value)
+    var lo = values.min() ?? 0
+    var hi = values.max() ?? 100
+    if let target = store.targetValue {
+      lo = min(lo, target - 1)
+      hi = max(hi, target + 1)
     }
+    let padding = max((hi - lo) * 0.1, 0.5)
+    return (lo - padding)...(hi + padding)
   }
 
-  private var connectionStateText: String {
-    switch store.connectionState {
-    case .disconnected:
-      "disconnected"
-    case .connecting:
-      "connecting"
-    case .connected:
-      "connected"
-    case let .failedConnection(errorDescription):
-      if let errorDescription {
-        "failedConnection \(errorDescription)"
-      } else {
-        "failedConnection"
-      }
+  private var indicatorColor: Color {
+    guard let target = store.targetValue, let temp = store.valueInCelcius else {
+      return .secondary
+    }
+    let diff = abs(temp - target)
+    if diff <= 1 {
+      return .green
+    } else {
+      return .orange
     }
   }
 }

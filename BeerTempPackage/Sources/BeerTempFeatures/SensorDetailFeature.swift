@@ -74,22 +74,29 @@ public struct SensorDetail {
 
       case .setTargetConfirmed:
         state.isTargetValueAlertShown = false
+        state.connectionState = .connecting
         let sensorID = state.sensorID
         let input = state.targetValueInput
         let bluetoothClient = bluetoothClient
         return .run { send in
+          try await bluetoothClient.connect(sensorID)
           let newValue = try Double(input, format: .number)
           let confirmed = try await bluetoothClient.setTargetValue(sensorID, newValue)
+          await bluetoothClient.disconnect(sensorID)
           await send(.setTargetResponse(.success(confirmed)))
         } catch: { error, send in
+          await bluetoothClient.disconnect(sensorID)
           await send(.setTargetResponse(.failure(error)))
         }
 
       case let .setTargetResponse(.success(confirmed)):
         state.targetValue = confirmed
+        state.connectionState = .disconnected
         return .none
 
-      case .setTargetResponse(.failure):
+      case let .setTargetResponse(.failure(error)):
+        state.connectionState = .failedConnection(
+          errorDescription: error.localizedDescription)
         return .none
 
       case .shareSheetDismissed:
