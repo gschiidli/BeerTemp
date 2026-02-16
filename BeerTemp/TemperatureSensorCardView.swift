@@ -51,9 +51,10 @@ struct TemperatureSensorCardView: View {
           }
         }
         if let target = store.targetValue {
+          let tolerance = store.targetTolerance
           RectangleMark(
-            yStart: .value("Lower", target - 1),
-            yEnd: .value("Upper", target + 1)
+            yStart: .value("Lower", target - tolerance),
+            yEnd: .value("Upper", target + tolerance)
           )
           .foregroundStyle(indicatorColor.opacity(0.15))
           RuleMark(y: .value("Target", target))
@@ -95,7 +96,7 @@ struct TemperatureSensorCardView: View {
 
   private var extrapolation: TemperatureExtrapolation? {
     TemperatureExtrapolation.compute(
-      pastValues: store.pastValues,
+      pastValues: store.pastValues.map { (date: $0.date, value: $0.value) },
       targetValue: store.targetValue
     )
   }
@@ -118,8 +119,9 @@ struct TemperatureSensorCardView: View {
     var lo = values.min() ?? 0
     var hi = values.max() ?? 100
     if let target = store.targetValue {
-      lo = min(lo, target - 1)
-      hi = max(hi, target + 1)
+      let tolerance = store.targetTolerance
+      lo = min(lo, target - tolerance)
+      hi = max(hi, target + tolerance)
     }
     let padding = max((hi - lo) * 0.1, 0.5)
     return (lo - padding)...(hi + padding)
@@ -130,10 +132,12 @@ struct TemperatureSensorCardView: View {
       return .secondary
     }
     let diff = abs(temp - target)
-    if diff <= 1 {
+    if diff <= store.targetTolerance {
       return .green
-    } else {
+    } else if extrapolation?.estimatedSecondsRemaining != nil {
       return .orange
+    } else {
+      return .red
     }
   }
 }

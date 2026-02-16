@@ -9,11 +9,14 @@ public struct SensorDetail {
     public var name: String?
     public var valueInCelcius: Double?
     public var targetValue: Double?
+    public var targetTolerance: Double = 1.0
     public var targetValueProgress: TargetValueProgress = .notInProgress
     public var pastValues: [LogValue] = []
     public var connectionState: ConnectionState = .disconnected
     public var targetValueInput: String = "65"
     public var isTargetValueAlertShown = false
+    public var targetToleranceInput: String = "1"
+    public var isToleranceAlertShown = false
     public var logFileURL: URL?
     public var isShareSheetPresented = false
 
@@ -26,6 +29,7 @@ public struct SensorDetail {
       name: String?,
       valueInCelcius: Double? = nil,
       targetValue: Double? = nil,
+      targetTolerance: Double = 1.0,
       targetValueProgress: TargetValueProgress = .notInProgress,
       pastValues: [LogValue] = [],
       connectionState: ConnectionState = .disconnected
@@ -34,6 +38,7 @@ public struct SensorDetail {
       self.name = name
       self.valueInCelcius = valueInCelcius
       self.targetValue = targetValue
+      self.targetTolerance = targetTolerance
       self.targetValueProgress = targetValueProgress
       self.pastValues = pastValues
       self.connectionState = connectionState
@@ -46,6 +51,8 @@ public struct SensorDetail {
     case setTargetButtonTapped
     case setTargetConfirmed
     case setTargetResponse(Result<Double?, any Error>)
+    case setToleranceButtonTapped
+    case setToleranceConfirmed
     case shareSheetDismissed
   }
 
@@ -97,6 +104,19 @@ public struct SensorDetail {
       case let .setTargetResponse(.failure(error)):
         state.connectionState = .failedConnection(
           errorDescription: error.localizedDescription)
+        return .none
+
+      case .setToleranceButtonTapped:
+        state.targetToleranceInput = state.targetTolerance
+          .formatted(.number.precision(.fractionLength(0...1)))
+        state.isToleranceAlertShown = true
+        return .none
+
+      case .setToleranceConfirmed:
+        state.isToleranceAlertShown = false
+        if let value = try? Double(state.targetToleranceInput, format: .number), value > 0 {
+          state.targetTolerance = value
+        }
         return .none
 
       case .shareSheetDismissed:

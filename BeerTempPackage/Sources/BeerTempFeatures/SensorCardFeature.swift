@@ -9,6 +9,7 @@ public struct SensorCard {
     public var name: String?
     public var valueInCelcius: Double?
     public var targetValue: Double?
+    public var targetTolerance: Double = 1.0
     public var targetValueProgress: TargetValueProgress = .notInProgress
     public var pastValues: [LogValue] = []
     public var connectionState: ConnectionState = .disconnected

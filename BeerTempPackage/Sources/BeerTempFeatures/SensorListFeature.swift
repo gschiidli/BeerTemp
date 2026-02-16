@@ -115,6 +115,7 @@ public struct SensorList {
           name: sensor.name,
           valueInCelcius: sensor.valueInCelcius,
           targetValue: sensor.targetValue,
+          targetTolerance: sensor.targetTolerance,
           targetValueProgress: sensor.targetValueProgress,
           pastValues: sensor.pastValues
         )
@@ -173,6 +174,12 @@ public struct SensorList {
         return .none
 
       case .path(.element(_, action: .setTargetConfirmed)):
+        return .none
+
+      case let .path(.element(id: pathID, action: .setToleranceConfirmed)):
+        if let detail = state.path[id: pathID] {
+          state.sensors[id: detail.sensorID]?.targetTolerance = detail.targetTolerance
+        }
         return .none
 
       case let .path(.element(id: pathID, action: .setTargetResponse(.success(confirmed)))):

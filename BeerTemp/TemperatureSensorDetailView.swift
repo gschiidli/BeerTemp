@@ -48,9 +48,10 @@ struct TemperatureSensorDetailView: View {
           }
         }
         if let target = store.targetValue {
+          let tolerance = store.targetTolerance
           RectangleMark(
-            yStart: .value("Lower", target - 1),
-            yEnd: .value("Upper", target + 1)
+            yStart: .value("Lower", target - tolerance),
+            yEnd: .value("Upper", target + tolerance)
           )
           .foregroundStyle(indicatorColor.opacity(0.15))
           RuleMark(y: .value("Target", target))
@@ -81,6 +82,11 @@ struct TemperatureSensorDetailView: View {
     .navigationTitle(store.name ?? "Unknown Sensor")
     .toolbar {
       Button {
+        store.send(.setToleranceButtonTapped)
+      } label: {
+        Image(systemName: "plusminus")
+      }
+      Button {
         store.send(.setTargetButtonTapped)
       } label: {
         Image(systemName: "target")
@@ -107,11 +113,24 @@ struct TemperatureSensorDetailView: View {
       }
       Button("Cancel", role: .cancel) {}
     } message: {}
+    .alert(
+      "Set target tolerance",
+      isPresented: $store.isToleranceAlertShown
+    ) {
+      TextField("Tolerance (°C)", text: $store.targetToleranceInput)
+        .keyboardType(.decimalPad)
+      Button("Set tolerance") {
+        store.send(.setToleranceConfirmed)
+      }
+      Button("Cancel", role: .cancel) {}
+    } message: {
+      Text("Current: ±\(store.targetTolerance.formatted(.number.precision(.fractionLength(0...1)))) °C")
+    }
   }
 
   private var extrapolation: TemperatureExtrapolation? {
     TemperatureExtrapolation.compute(
-      pastValues: store.pastValues,
+      pastValues: store.pastValues.map { (date: $0.date, value: $0.value) },
       targetValue: store.targetValue
     )
   }
@@ -134,20 +153,25 @@ struct TemperatureSensorDetailView: View {
     var lo = values.min() ?? 0
     var hi = values.max() ?? 100
     if let target = store.targetValue {
-      lo = min(lo, target - 1)
-      hi = max(hi, target + 1)
+      let tolerance = store.targetTolerance
+      lo = min(lo, target - tolerance)
+      hi = max(hi, target + tolerance)
     }
     let padding = max((hi - lo) * 0.1, 0.5)
     return (lo - padding)...(hi + padding)
   }
 
   private func formattedDuration(_ seconds: TimeInterval) -> String {
-    let hours = Int(seconds) / 3600
-    let minutes = (Int(seconds) % 3600) / 60
+    let total = Int(seconds)
+    let hours = total / 3600
+    let minutes = (total % 3600) / 60
+    let secs = total % 60
     if hours > 0 {
-      return "~\(hours)h \(minutes)m"
+      return "~\(hours)h \(minutes)m \(secs)s"
+    } else if minutes > 0 {
+      return "~\(minutes)m \(secs)s"
     } else {
-      return "~\(minutes)m"
+      return "~\(secs)s"
     }
   }
 
@@ -156,10 +180,12 @@ struct TemperatureSensorDetailView: View {
       return .secondary
     }
     let diff = abs(temp - target)
-    if diff <= 1 {
+    if diff <= store.targetTolerance {
       return .green
-    } else {
+    } else if extrapolation?.estimatedSecondsRemaining != nil {
       return .orange
+    } else {
+      return .red
     }
   }
 }
