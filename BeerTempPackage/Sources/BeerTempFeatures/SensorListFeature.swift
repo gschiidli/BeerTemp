@@ -242,7 +242,6 @@ public struct SensorList {
           return .run { _ in
             await liveActivityClient.endAll(finalState)
           }
-          .cancellable(id: CancelID.liveActivity(sensorID), cancelInFlight: true)
         } else {
           let sensorName = detail.name ?? "Unknown Sensor"
           let contentState = buildContentState(for: sensorID, in: state)
@@ -259,7 +258,6 @@ public struct SensorList {
               await send(.liveActivityFailed(sensorID: sensorID))
             }
           }
-          .cancellable(id: CancelID.liveActivity(sensorID), cancelInFlight: true)
         }
 
       case .path(.element(_, action: .setTargetConfirmed)):
