@@ -17,6 +17,7 @@ public struct SensorDetail {
     public var isTargetValueAlertShown = false
     public var targetToleranceInput: String = "1"
     public var isToleranceAlertShown = false
+    public var isLiveActivityActive = false
     public var logFileURL: URL?
     public var isShareSheetPresented = false
 
@@ -32,7 +33,8 @@ public struct SensorDetail {
       targetTolerance: Double = 1.0,
       targetValueProgress: TargetValueProgress = .notInProgress,
       pastValues: [LogValue] = [],
-      connectionState: ConnectionState = .disconnected
+      connectionState: ConnectionState = .disconnected,
+      isLiveActivityActive: Bool = false
     ) {
       self.sensorID = sensorID
       self.name = name
@@ -42,6 +44,7 @@ public struct SensorDetail {
       self.targetValueProgress = targetValueProgress
       self.pastValues = pastValues
       self.connectionState = connectionState
+      self.isLiveActivityActive = isLiveActivityActive
     }
   }
 
@@ -54,6 +57,7 @@ public struct SensorDetail {
     case setToleranceButtonTapped
     case setToleranceConfirmed
     case shareSheetDismissed
+    case toggleLiveActivityTapped
   }
 
   @Dependency(\.bluetoothClient) var bluetoothClient
@@ -122,6 +126,9 @@ public struct SensorDetail {
       case .shareSheetDismissed:
         state.isShareSheetPresented = false
         state.logFileURL = nil
+        return .none
+
+      case .toggleLiveActivityTapped:
         return .none
       }
     }

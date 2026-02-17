@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+@_exported import BeerTempLiveActivityShared
 @_exported import TemperatureExtrapolation
 
 public enum ConnectionState: Equatable, Sendable {

@@ -13,6 +13,9 @@ public struct SensorCard {
     public var targetValueProgress: TargetValueProgress = .notInProgress
     public var pastValues: [LogValue] = []
     public var connectionState: ConnectionState = .disconnected
+    public var isLiveActivityActive = false
+    public var liveActivityID: String?
+    public var lastLiveActivityUpdate: Date?
     public var logFileURL: URL?
     public var isShareSheetPresented = false
 

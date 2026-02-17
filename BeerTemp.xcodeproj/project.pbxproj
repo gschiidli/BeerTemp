@@ -23,7 +23,38 @@
 		BB0000022F000020000BB001 /* LoggerClient+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000052F000050000BB001 /* LoggerClient+Live.swift */; };
 		BB0000032F000030000BB001 /* NotificationClient+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000062F000060000BB001 /* NotificationClient+Live.swift */; };
 		CC0000012F000010000CC001 /* BluetoothClient+Simulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000022F000020000CC001 /* BluetoothClient+Simulator.swift */; };
+		DD0000022F000002000DD001 /* LiveActivityClient+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0000012F000001000DD001 /* LiveActivityClient+Live.swift */; };
+		EE0000112F000011000EE001 /* BeerTempLiveActivityWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0000012F000001000EE001 /* BeerTempLiveActivityWidgetBundle.swift */; };
+		EE0000122F000012000EE001 /* BeerTempLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0000022F000002000EE001 /* BeerTempLiveActivityWidget.swift */; };
+		EE0000132F000013000EE001 /* LockScreenLiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0000032F000003000EE001 /* LockScreenLiveActivityView.swift */; };
+		EE0000142F000014000EE001 /* DynamicIslandViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0000042F000004000EE001 /* DynamicIslandViews.swift */; };
+		EE0000152F000015000EE001 /* BeerTempLiveActivityShared in Frameworks */ = {isa = PBXBuildFile; productRef = EE00A0012F00A001000EE001 /* BeerTempLiveActivityShared */; };
+		EE0000162F000016000EE001 /* BeerTempLiveActivityWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = EE0000052F000005000EE001 /* BeerTempLiveActivityWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EE0000802F000080000EE001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 527B712B2C62A0A5003CC99D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EE0000502F000050000EE001;
+			remoteInfo = BeerTempLiveActivityWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EE0000402F000040000EE001 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				EE0000162F000016000EE001 /* BeerTempLiveActivityWidget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		527B71332C62A0A5003CC99D /* BeerTemp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeerTemp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,6 +75,12 @@
 		BB0000052F000050000BB001 /* LoggerClient+Live.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoggerClient+Live.swift"; sourceTree = "<group>"; };
 		BB0000062F000060000BB001 /* NotificationClient+Live.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationClient+Live.swift"; sourceTree = "<group>"; };
 		CC0000022F000020000CC001 /* BluetoothClient+Simulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BluetoothClient+Simulator.swift"; sourceTree = "<group>"; };
+		DD0000012F000001000DD001 /* LiveActivityClient+Live.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LiveActivityClient+Live.swift"; sourceTree = "<group>"; };
+		EE0000012F000001000EE001 /* BeerTempLiveActivityWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerTempLiveActivityWidgetBundle.swift; sourceTree = "<group>"; };
+		EE0000022F000002000EE001 /* BeerTempLiveActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerTempLiveActivityWidget.swift; sourceTree = "<group>"; };
+		EE0000032F000003000EE001 /* LockScreenLiveActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenLiveActivityView.swift; sourceTree = "<group>"; };
+		EE0000042F000004000EE001 /* DynamicIslandViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicIslandViews.swift; sourceTree = "<group>"; };
+		EE0000052F000005000EE001 /* BeerTempLiveActivityWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BeerTempLiveActivityWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +92,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EE0000312F000031000EE001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE0000152F000015000EE001 /* BeerTempLiveActivityShared in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -62,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				527B71352C62A0A5003CC99D /* BeerTemp */,
+				EE0000202F000020000EE001 /* BeerTempLiveActivityWidget */,
 				527B71342C62A0A5003CC99D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -70,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				527B71332C62A0A5003CC99D /* BeerTemp.app */,
+				EE0000052F000005000EE001 /* BeerTempLiveActivityWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,9 +164,21 @@
 				BB0000042F000040000BB001 /* BluetoothClient+Live.swift */,
 				BB0000052F000050000BB001 /* LoggerClient+Live.swift */,
 				BB0000062F000060000BB001 /* NotificationClient+Live.swift */,
+				DD0000012F000001000DD001 /* LiveActivityClient+Live.swift */,
 				CC0000022F000020000CC001 /* BluetoothClient+Simulator.swift */,
 			);
 			path = Dependencies;
+			sourceTree = "<group>";
+		};
+		EE0000202F000020000EE001 /* BeerTempLiveActivityWidget */ = {
+			isa = PBXGroup;
+			children = (
+				EE0000012F000001000EE001 /* BeerTempLiveActivityWidgetBundle.swift */,
+				EE0000022F000002000EE001 /* BeerTempLiveActivityWidget.swift */,
+				EE0000032F000003000EE001 /* LockScreenLiveActivityView.swift */,
+				EE0000042F000004000EE001 /* DynamicIslandViews.swift */,
+			);
+			path = BeerTempLiveActivityWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -132,10 +191,12 @@
 				527B712F2C62A0A5003CC99D /* Sources */,
 				527B71302C62A0A5003CC99D /* Frameworks */,
 				527B71312C62A0A5003CC99D /* Resources */,
+				EE0000402F000040000EE001 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				EE0000902F000090000EE001 /* PBXTargetDependency */,
 			);
 			name = BeerTemp;
 			packageProductDependencies = (
@@ -144,6 +205,26 @@
 			productName = BeerTemp;
 			productReference = 527B71332C62A0A5003CC99D /* BeerTemp.app */;
 			productType = "com.apple.product-type.application";
+		};
+		EE0000502F000050000EE001 /* BeerTempLiveActivityWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EE0000702F000070000EE001 /* Build configuration list for PBXNativeTarget "BeerTempLiveActivityWidget" */;
+			buildPhases = (
+				EE0000302F000030000EE001 /* Sources */,
+				EE0000312F000031000EE001 /* Frameworks */,
+				EE0000322F000032000EE001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BeerTempLiveActivityWidget;
+			packageProductDependencies = (
+				EE00A0012F00A001000EE001 /* BeerTempLiveActivityShared */,
+			);
+			productName = BeerTempLiveActivityWidget;
+			productReference = EE0000052F000005000EE001 /* BeerTempLiveActivityWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -156,6 +237,9 @@
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					527B71322C62A0A5003CC99D = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					EE0000502F000050000EE001 = {
 						CreatedOnToolsVersion = 15.2;
 					};
 				};
@@ -177,6 +261,7 @@
 			);
 			targets = (
 				527B71322C62A0A5003CC99D /* BeerTemp */,
+				EE0000502F000050000EE001 /* BeerTempLiveActivityWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -188,6 +273,13 @@
 			files = (
 				527B713F2C62A0A7003CC99D /* Preview Assets.xcassets in Resources */,
 				527B713B2C62A0A7003CC99D /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE0000322F000032000EE001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,10 +303,30 @@
 				BB0000022F000020000BB001 /* LoggerClient+Live.swift in Sources */,
 				BB0000032F000030000BB001 /* NotificationClient+Live.swift in Sources */,
 				CC0000012F000010000CC001 /* BluetoothClient+Simulator.swift in Sources */,
+				DD0000022F000002000DD001 /* LiveActivityClient+Live.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EE0000302F000030000EE001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE0000112F000011000EE001 /* BeerTempLiveActivityWidgetBundle.swift in Sources */,
+				EE0000122F000012000EE001 /* BeerTempLiveActivityWidget.swift in Sources */,
+				EE0000132F000013000EE001 /* LockScreenLiveActivityView.swift in Sources */,
+				EE0000142F000014000EE001 /* DynamicIslandViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EE0000902F000090000EE001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EE0000502F000050000EE001 /* BeerTempLiveActivityWidget */;
+			targetProxy = EE0000802F000080000EE001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		527B71402C62A0A7003CC99D /* Debug */ = {
@@ -334,6 +446,7 @@
 		527B71432C62A0A7003CC99D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeerTemp/BeerTemp.entitlements;
@@ -374,6 +487,7 @@
 		527B71442C62A0A7003CC99D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeerTemp/BeerTemp.entitlements;
@@ -411,6 +525,62 @@
 			};
 			name = Release;
 		};
+		EE0000602F000060000EE001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6VC52FR9XZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BeerTempLiveActivityWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BeerTempLiveActivityWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = at.arkulpa.konstantin.BeerTemp.LiveActivityWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EE0000612F000061000EE001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6VC52FR9XZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BeerTempLiveActivityWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BeerTempLiveActivityWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = at.arkulpa.konstantin.BeerTemp.LiveActivityWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -432,6 +602,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		EE0000702F000070000EE001 /* Build configuration list for PBXNativeTarget "BeerTempLiveActivityWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EE0000602F000060000EE001 /* Debug */,
+				EE0000612F000061000EE001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -445,6 +624,10 @@
 		AA0000022F000002000AA001 /* BeerTempFeatures */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BeerTempFeatures;
+		};
+		EE00A0012F00A001000EE001 /* BeerTempLiveActivityShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BeerTempLiveActivityShared;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

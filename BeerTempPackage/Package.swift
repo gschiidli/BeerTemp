@@ -10,6 +10,7 @@ let package = Package(
   ],
   products: [
     .library(name: "BeerTempFeatures", targets: ["BeerTempFeatures"]),
+    .library(name: "BeerTempLiveActivityShared", targets: ["BeerTempLiveActivityShared"]),
     .library(name: "TemperatureExtrapolation", targets: ["TemperatureExtrapolation"]),
   ],
   dependencies: [
@@ -20,9 +21,13 @@ let package = Package(
       name: "TemperatureExtrapolation"
     ),
     .target(
+      name: "BeerTempLiveActivityShared"
+    ),
+    .target(
       name: "BeerTempFeatures",
       dependencies: [
         "TemperatureExtrapolation",
+        "BeerTempLiveActivityShared",
         .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
       ]
     ),

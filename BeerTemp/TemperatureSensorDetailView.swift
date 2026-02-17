@@ -88,6 +88,13 @@ struct TemperatureSensorDetailView: View {
     .navigationTitle(store.name ?? "Unknown Sensor")
     .toolbar {
       Button {
+        store.send(.toggleLiveActivityTapped)
+      } label: {
+        Image(
+          systemName: store.isLiveActivityActive
+            ? "wave.3.right.circle.fill" : "wave.3.right.circle")
+      }
+      Button {
         store.send(.setToleranceButtonTapped)
       } label: {
         Image(systemName: "plusminus")
