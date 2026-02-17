@@ -60,6 +60,21 @@ struct TemperatureSensorCardView: View {
           RuleMark(y: .value("Target", target))
             .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 3]))
             .foregroundStyle(indicatorColor)
+            .annotation(position: .overlay, alignment: .trailing) {
+              VStack(alignment: .trailing, spacing: 2) {
+                Text("\(target.formatted(.number.precision(.fractionLength(0)))) ±\(tolerance.formatted(.number.precision(.fractionLength(0...1)))) °C")
+                  .font(.callout)
+                  .foregroundStyle(indicatorColor)
+                if let eta = extrapolation?.estimatedSecondsRemaining {
+                  Text("\(formattedDuration(eta)) (\(formattedTime(eta)))")
+                    .font(.callout)
+                    .foregroundStyle(indicatorColor.opacity(0.8))
+                }
+              }
+              .padding(.horizontal, 6)
+              .padding(.vertical, 3)
+              .background(.background, in: RoundedRectangle(cornerRadius: 4))
+            }
         }
       }
       .chartXAxis(.hidden)
@@ -125,6 +140,25 @@ struct TemperatureSensorCardView: View {
     }
     let padding = max((hi - lo) * 0.1, 0.5)
     return (lo - padding)...(hi + padding)
+  }
+
+  private func formattedTime(_ secondsRemaining: TimeInterval) -> String {
+    let arrival = Date().addingTimeInterval(secondsRemaining)
+    return arrival.formatted(date: .omitted, time: .shortened)
+  }
+
+  private func formattedDuration(_ seconds: TimeInterval) -> String {
+    let total = Int(seconds)
+    let hours = total / 3600
+    let minutes = (total % 3600) / 60
+    let secs = total % 60
+    if hours > 0 {
+      return "~\(hours)h \(minutes)m"
+    } else if minutes > 0 {
+      return "~\(minutes)m \(secs)s"
+    } else {
+      return "~\(secs)s"
+    }
   }
 
   private var indicatorColor: Color {
